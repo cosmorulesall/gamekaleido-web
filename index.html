@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gamekaleido — Personalised Board Games</title>
+  <meta name="description" content="Personalised board games crafted around the people you love. Coming soon." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   #FAF7F2;
+      --ink:     #1C1917;
+      --gold:    #B5893A;
+      --muted:   #78716C;
+      --border:  #E5DDD3;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: var(--cream);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .wordmark {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--ink);
+      margin-bottom: 0.25rem;
+    }
+
+    .wordmark span {
+      color: var(--gold);
+    }
+
+    .divider {
+      width: 40px;
+      height: 2px;
+      background: var(--gold);
+      margin: 1.5rem auto;
+      border-radius: 2px;
+    }
+
+    .tagline {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.1rem, 3vw, 1.35rem);
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.4;
+      margin-bottom: 1rem;
+    }
+
+    .subtext {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+    }
+
+    .badge {
+      display: inline-block;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.45rem 1.1rem;
+      border-radius: 999px;
+    }
+
+    .notify {
+      margin-top: 2.5rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .notify p {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    .notify form {
+      display: flex;
+      gap: 0.5rem;
+      max-width: 380px;
+      margin: 0 auto;
+    }
+
+    .notify input[type="email"] {
+      flex: 1;
+      padding: 0.65rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: white;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .notify input[type="email"]:focus {
+      border-color: var(--gold);
+    }
+
+    .notify button {
+      padding: 0.65rem 1.25rem;
+      background: var(--gold);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+
+    .notify button:hover {
+      opacity: 0.88;
+    }
+
+    footer {
+      margin-top: 3rem;
+      font-size: 0.75rem;
+      color: #C4BBB4;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <p class="wordmark">Game<span>kaleido</span></p>
+
+    <div class="divider"></div>
+
+    <p class="tagline">Personalised board games crafted<br>around the people you love.</p>
+
+    <p class="subtext">
+      We're putting the finishing touches on something special.<br>
+      Every game is uniquely designed for its recipient — their places, their stories, their people.
+    </p>
+
+    <span class="badge">Coming Soon</span>
+
+    <div class="notify">
+      <p>Be the first to know when we launch.</p>
+      <form onsubmit="handleSubmit(event)">
+        <input type="email" placeholder="your@email.com" required />
+        <button type="submit">Notify me</button>
+      </form>
+    </div>
+
+    <footer>© 2026 Gamekaleido. All rights reserved.</footer>
+  </div>
+
+  <script>
+    function handleSubmit(e) {
+      e.preventDefault();
+      const btn = e.target.querySelector('button');
+      const input = e.target.querySelector('input');
+      btn.textContent = 'Done!';
+      btn.style.background = '#5A7A5A';
+      input.disabled = true;
+      btn.disabled = true;
+    }
+  </script>
+</body>
+</html>
