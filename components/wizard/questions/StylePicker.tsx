@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Question } from "@/lib/wizard-types";
 
 interface StylePickerProps {
@@ -8,6 +8,9 @@ interface StylePickerProps {
   value: string;
   onChange: (value: string) => void;
 }
+
+const FREEFORM_PREFIX = "__freeform__:";
+const FREEFORM_SENTINEL = "__freeform__";
 
 // Visual style thumbnails — abstract gradient-based placeholders per style
 const STYLE_VISUALS: Record<string, { gradient: string; icon: string }> = {
@@ -42,8 +45,18 @@ export default function StylePicker({
   value,
   onChange,
 }: StylePickerProps) {
-  const [freeform, setFreeform] = useState("");
-  const isFreeformActive = value === "__freeform__";
+  const [freeform, setFreeform] = useState(() =>
+    value.startsWith(FREEFORM_PREFIX) ? value.slice(FREEFORM_PREFIX.length) : ""
+  );
+  const isFreeformActive = value === FREEFORM_SENTINEL || value.startsWith(FREEFORM_PREFIX);
+
+  useEffect(() => {
+    if (value.startsWith(FREEFORM_PREFIX)) {
+      setFreeform(value.slice(FREEFORM_PREFIX.length));
+    } else if (!value.startsWith(FREEFORM_SENTINEL)) {
+      setFreeform("");
+    }
+  }, [value]);
 
   return (
     <div>
@@ -60,7 +73,10 @@ export default function StylePicker({
             <button
               key={option.value}
               type="button"
-              onClick={() => onChange(option.value)}
+              onClick={() => {
+                onChange(option.value);
+                setFreeform("");
+              }}
               className={`group relative rounded-xl overflow-hidden border transition-all duration-300 ${
                 isSelected
                   ? "border-amber/40 ring-1 ring-amber/20"
@@ -115,10 +131,10 @@ export default function StylePicker({
             value={freeform}
             onChange={(e) => {
               setFreeform(e.target.value);
-              if (e.target.value) onChange("__freeform__");
+              onChange(e.target.value ? `${FREEFORM_PREFIX}${e.target.value}` : "");
             }}
             onFocus={() => {
-              if (freeform) onChange("__freeform__");
+              if (freeform) onChange(`${FREEFORM_PREFIX}${freeform}`);
             }}
             placeholder={question.freeform_placeholder}
             className={`glass-input ${isFreeformActive ? "border-amber/30" : ""}`}
