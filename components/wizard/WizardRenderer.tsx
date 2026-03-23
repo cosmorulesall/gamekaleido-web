@@ -122,8 +122,29 @@ export default function WizardRenderer({ config, archetype }: WizardRendererProp
       state.mode
     );
 
+    // Check edit-mode return before setState so we can skip history push
+    const willReturnToSummary =
+      state.returnToSummary &&
+      state.editSectionId &&
+      (sectionIndex !== state.currentSectionIndex || isPreview);
+
     setState((prev) => {
       if (!prev) return prev;
+
+      // Edit mode: return to summary when leaving the editing section
+      if (prev.returnToSummary && prev.editSectionId) {
+        const leavingSection = sectionIndex !== prev.currentSectionIndex || isPreview;
+        if (leavingSection) {
+          return {
+            ...prev,
+            isComplete: true,
+            isPreview: false,
+            returnToSummary: undefined,
+            editSectionId: undefined,
+          };
+        }
+      }
+
       return {
         ...prev,
         currentQuestionId: questionId,
@@ -132,7 +153,7 @@ export default function WizardRenderer({ config, archetype }: WizardRendererProp
       };
     });
 
-    if (questionId) {
+    if (questionId && !willReturnToSummary) {
       setHistory((h) => [...h, questionId]);
     }
     triggerPulse();
@@ -140,6 +161,22 @@ export default function WizardRenderer({ config, archetype }: WizardRendererProp
 
   // Navigate back — always call this hook
   const handleBack = useCallback(() => {
+    // Edit mode: if at start of section, return to summary
+    if (state?.returnToSummary && history.length < 2) {
+      setState((prev) =>
+        prev
+          ? {
+              ...prev,
+              isComplete: true,
+              isPreview: false,
+              returnToSummary: undefined,
+              editSectionId: undefined,
+            }
+          : prev
+      );
+      return;
+    }
+
     if (history.length < 2) return;
     const prevId = history[history.length - 2];
     const found = findQuestion(config, prevId);
@@ -155,7 +192,7 @@ export default function WizardRenderer({ config, archetype }: WizardRendererProp
       };
     });
     setHistory((h) => h.slice(0, -1));
-  }, [history, config]);
+  }, [history, config, state?.returnToSummary]);
 
   // --- All hooks are above this line. Conditional returns below. ---
 
@@ -327,6 +364,29 @@ export default function WizardRenderer({ config, archetype }: WizardRendererProp
               prev ? { ...prev, isComplete: false, isPreview: true } : prev
             );
           }}
+          onEditSection={(sectionId) => {
+            const sectionIndex = config.sections.findIndex((s) => s.id === sectionId);
+            if (sectionIndex === -1) return;
+            const section = config.sections[sectionIndex];
+            const firstQuestion = section.questions[0];
+            if (!firstQuestion) return;
+
+            setState((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    isComplete: false,
+                    isPreview: false,
+                    currentQuestionId: firstQuestion.id,
+                    currentSectionIndex: sectionIndex,
+                    returnToSummary: true,
+                    editSectionId: sectionId,
+                  }
+                : prev
+            );
+            // Fresh history for edit mode — prevents Back from going to prior sections
+            setHistory([firstQuestion.id]);
+          }}
         />
       </WizardShell>
     );
@@ -358,7 +418,7 @@ export default function WizardRenderer({ config, archetype }: WizardRendererProp
               ? handleGenerate
               : undefined
           }
-          canGoBack={history.length > 1}
+          canGoBack={history.length > 1 || !!state.returnToSummary}
           canGoNext={canGoNext()}
         >
           {renderQuestionInput(currentQuestion, state, getAnswer, setAnswer)}

@@ -9,6 +9,7 @@ interface CompletionSummaryProps {
   state: WizardState;
   onStartFresh: () => void;
   onGoBack: () => void;
+  onEditSection: (sectionId: string) => void;
 }
 
 export default function CompletionSummary({
@@ -16,6 +17,7 @@ export default function CompletionSummary({
   state,
   onStartFresh,
   onGoBack,
+  onEditSection,
 }: CompletionSummaryProps) {
   const answers = state.answers;
 
@@ -53,7 +55,7 @@ export default function CompletionSummary({
           value: answers[q.maps_to ?? q.id],
           type: q.type,
         }));
-      return { title: section.title, questions: answeredQuestions };
+      return { title: section.title, sectionId: section.id, questions: answeredQuestions };
     })
     .filter((s) => s.questions.length > 0);
 
@@ -106,9 +108,18 @@ export default function CompletionSummary({
         {/* Sections */}
         {sections.map((section, si) => (
           <div key={si} className="mb-6 last:mb-0">
-            <h4 className="text-xs text-warm-muted/40 uppercase tracking-wider mb-3">
-              {section.title}
-            </h4>
+            <div className="flex items-center justify-between mb-3">
+              <h4 className="text-xs text-warm-muted/40 uppercase tracking-wider">
+                {section.title}
+              </h4>
+              <button
+                type="button"
+                onClick={() => onEditSection(section.sectionId)}
+                className="text-amber-light text-xs hover:text-amber-light/80 transition-colors"
+              >
+                Edit →
+              </button>
+            </div>
             <div className="space-y-3">
               {section.questions.map((q) => (
                 <div key={q.key}>

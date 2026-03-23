@@ -118,6 +118,8 @@ export interface WizardState {
   answers: Record<string, unknown>;
   isPreview: boolean;
   isComplete: boolean;
+  returnToSummary?: boolean;
+  editSectionId?: string;
 }
 
 export interface PlaceEntry {
