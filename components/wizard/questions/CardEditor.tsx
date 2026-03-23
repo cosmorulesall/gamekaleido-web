@@ -10,34 +10,6 @@ interface CardEditorProps {
   onRegenerate?: () => void;
 }
 
-// Stub: generate mock cards if none exist
-function generateMockCards(count: number): CardEntry[] {
-  const effects = [
-    "Collect 200 from the bank",
-    "Pay 50 to the bank",
-    "Move forward 3 spaces",
-    "Move back 2 spaces",
-    "Collect 100 from each player",
-    "Go directly to jail",
-    "Get out of jail free",
-    "Pay 25 per house you own",
-    "Swap positions with any player",
-    "You are immune to rent for 1 turn",
-    "Next property at 50% off",
-    "Steal 75 from any player",
-    "Collect 150 from the bank",
-    "Pay 100 to the bank",
-    "Advance to the nearest station",
-    "Collect 25% of all rent for 2 rounds",
-  ];
-
-  return Array.from({ length: count }, (_, i) => ({
-    id: `card_${i + 1}`,
-    text: effects[i % effects.length],
-    effect: effects[i % effects.length],
-  }));
-}
-
 export default function CardEditor({
   question,
   value,
@@ -46,15 +18,30 @@ export default function CardEditor({
 }: CardEditorProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  // Auto-populate with mock cards if empty
-  const cards = value.length > 0 ? value : generateMockCards(16);
+  // Empty state
   if (value.length === 0) {
-    // Trigger initial population
-    setTimeout(() => onChange(cards), 0);
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-teal/10 border border-teal/20 flex items-center justify-center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-teal-light">
+            <path d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <p className="text-warm-muted text-sm mb-1">No cards yet</p>
+        <p className="text-warm-muted/50 text-xs mb-4">
+          Cards will be generated based on your game&apos;s theme
+        </p>
+        {onRegenerate && (
+          <button type="button" onClick={onRegenerate} className="btn-generate">
+            Generate cards
+          </button>
+        )}
+      </div>
+    );
   }
 
   function updateCard(id: string, text: string) {
-    onChange(cards.map((c) => (c.id === id ? { ...c, text } : c)));
+    onChange(value.map((c) => (c.id === id ? { ...c, text } : c)));
   }
 
   return (
@@ -62,7 +49,7 @@ export default function CardEditor({
       {/* Header with regenerate */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-warm-muted text-xs">
-          {cards.length} cards
+          {value.length} cards
         </p>
         {onRegenerate && (
           <button
@@ -77,7 +64,7 @@ export default function CardEditor({
 
       {/* Card list */}
       <div className="space-y-2 max-h-[380px] overflow-y-auto pr-1">
-        {cards.map((card, i) => (
+        {value.map((card, i) => (
           <div
             key={card.id}
             className="flex items-start gap-3 px-4 py-3 rounded-lg bg-surface border border-warm-border group"

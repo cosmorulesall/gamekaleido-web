@@ -19,19 +19,6 @@ const CATEGORIES = [
   { id: "food_and_drink", label: "Food & Drink", colour: "#8B008B" },
 ];
 
-// Stub: generate mock questions
-function generateMockQuestions(categoryId: string): TriviaQuestion[] {
-  return Array.from({ length: 5 }, (_, i) => ({
-    id: `${categoryId}_q${i + 1}`,
-    category: categoryId,
-    text: `Sample ${categoryId.replace(/_/g, " ")} question ${i + 1}?`,
-    options: ["Option A", "Option B", "Option C", "Option D"],
-    correct_answer: 0,
-    difficulty: i < 2 ? "easy" : i < 4 ? "medium" : "hard",
-    fun_fact: "This is a fun fact that appears after the answer is revealed.",
-  }));
-}
-
 export default function QuestionEditor({
   question,
   value,
@@ -41,22 +28,34 @@ export default function QuestionEditor({
   const [activeCategory, setActiveCategory] = useState(CATEGORIES[0].id);
   const [editingQ, setEditingQ] = useState<string | null>(null);
 
-  // Auto-populate with mocks if empty
-  const questions = Object.keys(value).length > 0
-    ? value
-    : CATEGORIES.reduce((acc, cat) => {
-        acc[cat.id] = generateMockQuestions(cat.id);
-        return acc;
-      }, {} as Record<string, TriviaQuestion[]>);
+  const hasQuestions = Object.keys(value).length > 0;
 
-  if (Object.keys(value).length === 0) {
-    setTimeout(() => onChange(questions), 0);
+  // Empty state
+  if (!hasQuestions) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 text-center">
+        <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-teal/10 border border-teal/20 flex items-center justify-center">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-teal-light">
+            <path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </div>
+        <p className="text-warm-muted text-sm mb-1">No questions yet</p>
+        <p className="text-warm-muted/50 text-xs mb-4">
+          Questions will be generated based on your theme and personal facts
+        </p>
+        {onRegenerateCategory && (
+          <button type="button" onClick={() => onRegenerateCategory("all")} className="btn-generate">
+            Generate questions
+          </button>
+        )}
+      </div>
+    );
   }
 
-  const activeQuestions = questions[activeCategory] ?? [];
+  const activeQuestions = value[activeCategory] ?? [];
 
   function updateQuestion(qId: string, text: string) {
-    const updated = { ...questions };
+    const updated = { ...value };
     updated[activeCategory] = activeQuestions.map((q) =>
       q.id === qId ? { ...q, text } : q
     );
@@ -84,7 +83,7 @@ export default function QuestionEditor({
             />
             {cat.label}
             <span className="text-warm-muted/40">
-              ({(questions[cat.id] ?? []).length})
+              ({(value[cat.id] ?? []).length})
             </span>
           </button>
         ))}
