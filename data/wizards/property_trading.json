@@ -239,20 +239,19 @@
     {
       "id": "s6_players",
       "title": "Who's playing?",
-      "subtitle": "Player names appear on the board and in the game assistant.",
+      "subtitle": "Characters you add here will appear on the board and in the game.",
       "questions": [
         {
           "id": "q_player_names",
           "mode": "always",
           "type": "tag_input",
-          "text": "Add your players",
+          "text": "Who should feature in this game?",
+          "sublabel": "Think people, pets, or fictional characters that matter to the recipient.",
           "placeholder": "Type a name and press Enter",
-          "min_items": 2,
           "max_items": 6,
-          "required": true,
-          "generatable": false,
-          "next": "SECTION_END",
-          "maps_to": "personalisation.player_names"
+          "required": false,
+          "maps_to": "personalisation.key_characters",
+          "next": "SECTION_END"
         }
       ]
     },

@@ -154,7 +154,7 @@ function resolvePreviewItem(
       return currency ? { label: "Currency", value: currency } : null;
     }
     case "player_count": {
-      const players = answers["personalisation.player_names"] as
+      const players = answers["personalisation.key_characters"] as
         | string[]
         | undefined;
       return {
