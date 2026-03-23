@@ -331,8 +331,9 @@ export default function WizardRenderer({ config, archetype }: WizardRendererProp
           state={state}
           onEdit={handleBack}
           onConfirm={() => {
-            setState((prev) => (prev ? { ...prev, isComplete: true } : prev));
-            console.log("Wizard complete:", state.answers);
+            setState((prev) =>
+              prev ? { ...prev, isComplete: true, isPreview: false } : prev
+            );
           }}
         />
       </WizardShell>
