@@ -144,6 +144,7 @@
           "placeholder_name": "e.g. The Anchor Pub, Brighton seafront",
           "placeholder_note": "Why it matters (optional)",
           "required": false,
+          "skip_warning": true,
           "generatable": false,
           "max_items": 30,
           "next": "q_inspiration_extras",
@@ -174,6 +175,7 @@
           "type": "style_picker",
           "text": "Pick a visual style for your game",
           "required": false,
+          "skip_warning": true,
           "options": [
             { "value": "retro_vintage", "label": "Retro & Vintage", "description": "Warm tones, serif type, old-school charm" },
             { "value": "modern_minimal", "label": "Modern & Minimal", "description": "Clean lines, bold typography, understated" },
@@ -250,6 +252,7 @@
           "placeholder": "Type a name and press Enter",
           "max_items": 6,
           "required": false,
+          "skip_warning": true,
           "maps_to": "personalisation.key_characters",
           "next": "SECTION_END"
         }

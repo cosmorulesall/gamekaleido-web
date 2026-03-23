@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import type { Question, WizardMode } from "@/lib/wizard-types";
 import { shouldShowGenerate } from "@/lib/wizard-engine";
@@ -26,6 +27,7 @@ export default function QuestionWrapper({
   children,
 }: QuestionWrapperProps) {
   const showGenerate = shouldShowGenerate(question, mode);
+  const [showSkipWarning, setShowSkipWarning] = useState(false);
 
   return (
     <motion.div
@@ -82,7 +84,13 @@ export default function QuestionWrapper({
 
           {!question.required && (
             <button
-              onClick={onNext}
+              onClick={() => {
+                if (question.skip_warning) {
+                  setShowSkipWarning(true);
+                } else {
+                  onNext();
+                }
+              }}
               className="btn-ghost text-warm-muted/50"
               type="button"
             >
@@ -100,6 +108,35 @@ export default function QuestionWrapper({
           </button>
         </div>
       </div>
+      {/* Skip warning modal */}
+      {showSkipWarning && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="glass-panel p-6 max-w-sm text-center">
+            <p className="text-warm-white text-sm mb-6">
+              Skipping this means your game will feel less personal. Are you sure?
+            </p>
+            <div className="flex items-center justify-center gap-3">
+              <button
+                onClick={() => setShowSkipWarning(false)}
+                className="btn-ghost"
+                type="button"
+              >
+                Go back
+              </button>
+              <button
+                onClick={() => {
+                  setShowSkipWarning(false);
+                  onNext();
+                }}
+                className="btn-primary"
+                type="button"
+              >
+                Skip anyway
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </motion.div>
   );
 }

@@ -161,6 +161,7 @@
           "type": "style_picker",
           "text": "Pick a visual style",
           "required": false,
+          "skip_warning": true,
           "options": [
             { "value": "retro_vintage", "label": "Retro & Vintage", "description": "Warm tones, serif type, old-school charm" },
             { "value": "modern_minimal", "label": "Modern & Minimal", "description": "Clean lines, bold typography, understated" },
@@ -205,6 +206,7 @@
           "placeholder": "Type a name and press Enter",
           "max_items": 8,
           "required": false,
+          "skip_warning": true,
           "maps_to": "personalisation.key_characters",
           "next": "q_player_interests"
         },
@@ -216,6 +218,7 @@
           "placeholder": "e.g. Formula 1, hiking, 80s music, terrible reality TV, cooking, Arsenal FC",
           "hint": "These help us tailor the Sports & Leisure and Pop Culture categories to your group.",
           "required": false,
+          "skip_warning": true,
           "generatable": false,
           "next": "q_difficulty",
           "maps_to": "personalisation.player_interests"

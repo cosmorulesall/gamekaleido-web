@@ -71,6 +71,7 @@ export interface Question {
   hints?: string[];
   sublabel_digital?: string;
   sublabel_physical?: string;
+  skip_warning?: boolean;
 }
 
 export interface Section {
