@@ -78,6 +78,101 @@ export default function WizardRenderer({ config, archetype }: WizardRendererProp
     }
   }, [state?.isComplete, archetype]);
 
+  function triggerPulse() {
+    setPulse((p) => p + 1);
+  }
+
+  function getDefaultForType(q: Question): unknown {
+    switch (q.type) {
+      case "tag_input":
+      case "colour_palette":
+      case "place_input":
+      case "name_list":
+      case "card_editor":
+        return [];
+      case "property_grid":
+      case "category_name_editor":
+      case "question_editor":
+        return {};
+      case "mode_selector":
+        return state?.mode ?? "hybrid";
+      default:
+        return "";
+    }
+  }
+
+  // Get current question — always call this hook
+  const currentQuestion = useMemo(() => {
+    if (!state?.currentQuestionId) return null;
+    const found = findQuestion(config, state.currentQuestionId);
+    return found?.question ?? null;
+  }, [config, state?.currentQuestionId]);
+
+  // Navigate to next question — always call this hook
+  const handleNext = useCallback(() => {
+    if (!currentQuestion || !state) return;
+
+    const currentAnswer = state.answers[currentQuestion.maps_to ?? currentQuestion.id] ?? getDefaultForType(currentQuestion);
+    const { questionId, sectionIndex, isPreview } = resolveNext(
+      config,
+      currentQuestion,
+      currentAnswer,
+      state.currentSectionIndex,
+      state.mode
+    );
+
+    setState((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        currentQuestionId: questionId,
+        currentSectionIndex: sectionIndex,
+        isPreview,
+      };
+    });
+
+    if (questionId) {
+      setHistory((h) => [...h, questionId]);
+    }
+    triggerPulse();
+  }, [currentQuestion, state, config]);
+
+  // Navigate back — always call this hook
+  const handleBack = useCallback(() => {
+    if (history.length < 2) return;
+    const prevId = history[history.length - 2];
+    const found = findQuestion(config, prevId);
+    if (!found) return;
+
+    setState((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        currentQuestionId: prevId,
+        currentSectionIndex: found.sectionIndex,
+        isPreview: false,
+      };
+    });
+    setHistory((h) => h.slice(0, -1));
+  }, [history, config]);
+
+  // --- All hooks are above this line. Conditional returns below. ---
+
+  // Wait for draft check before rendering (avoids hydration mismatch)
+  if (!state && !draftChecked) {
+    return (
+      <WizardShell
+        config={config}
+        currentSectionIndex={0}
+        mode="hybrid"
+        isPreview={false}
+        pulse={pulse}
+      >
+        <div />
+      </WizardShell>
+    );
+  }
+
   // Edition not yet selected — show picker (or resume prompt)
   if (!state) {
     return (
@@ -141,41 +236,11 @@ export default function WizardRenderer({ config, archetype }: WizardRendererProp
     );
   }
 
-  function triggerPulse() {
-    setPulse((p) => p + 1);
-  }
-
-  // Get current question
-  const currentQuestion = useMemo(() => {
-    if (!state?.currentQuestionId) return null;
-    const found = findQuestion(config, state.currentQuestionId);
-    return found?.question ?? null;
-  }, [config, state?.currentQuestionId]);
-
   // Get answer value for current question
   function getAnswer(q: Question): unknown {
     if (!state) return "";
     const key = q.maps_to ?? q.id;
     return state.answers[key] ?? getDefaultForType(q);
-  }
-
-  function getDefaultForType(q: Question): unknown {
-    switch (q.type) {
-      case "tag_input":
-      case "colour_palette":
-      case "place_input":
-      case "name_list":
-      case "card_editor":
-        return [];
-      case "property_grid":
-      case "category_name_editor":
-      case "question_editor":
-        return {};
-      case "mode_selector":
-        return state?.mode ?? "hybrid";
-      default:
-        return "";
-    }
   }
 
   // Set answer for current question
@@ -194,58 +259,8 @@ export default function WizardRenderer({ config, archetype }: WizardRendererProp
     });
   }
 
-  // Navigate to next question
-  const handleNext = useCallback(() => {
-    if (!currentQuestion || !state) return;
-
-    const currentAnswer = state.answers[currentQuestion.maps_to ?? currentQuestion.id] ?? getDefaultForType(currentQuestion);
-    const { questionId, sectionIndex, isPreview } = resolveNext(
-      config,
-      currentQuestion,
-      currentAnswer,
-      state.currentSectionIndex,
-      state.mode
-    );
-
-    setState((prev) => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        currentQuestionId: questionId,
-        currentSectionIndex: sectionIndex,
-        isPreview,
-      };
-    });
-
-    if (questionId) {
-      setHistory((h) => [...h, questionId]);
-    }
-    triggerPulse();
-  }, [currentQuestion, state, config]);
-
-  // Navigate back
-  const handleBack = useCallback(() => {
-    if (history.length < 2) return;
-    const prevId = history[history.length - 2];
-    const found = findQuestion(config, prevId);
-    if (!found) return;
-
-    setState((prev) => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        currentQuestionId: prevId,
-        currentSectionIndex: found.sectionIndex,
-        isPreview: false,
-      };
-    });
-    setHistory((h) => h.slice(0, -1));
-  }, [history, config]);
-
   // Stub: handle generate
   function handleGenerate() {
-    // In the real implementation, this calls the AI backend
-    // For now, it's a no-op placeholder
     console.log("Generate triggered for:", currentQuestion?.id);
   }
 
@@ -279,7 +294,6 @@ export default function WizardRenderer({ config, archetype }: WizardRendererProp
           onEdit={handleBack}
           onConfirm={() => {
             setState((prev) => (prev ? { ...prev, isComplete: true } : prev));
-            // In production: submit to backend
             console.log("Wizard complete:", state.answers);
           }}
         />
