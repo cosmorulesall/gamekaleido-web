@@ -23,6 +23,7 @@ import { saveDraft, loadDraft, clearDraft } from "@/lib/wizard-storage";
 import WizardShell from "./WizardShell";
 import EditionPicker from "./EditionPicker";
 import PreviewScreen from "./PreviewScreen";
+import CompletionSummary from "./CompletionSummary";
 import QuestionWrapper from "./questions/QuestionWrapper";
 
 // Question type components
@@ -312,32 +313,16 @@ export default function WizardRenderer({ config, archetype }: WizardRendererProp
         pulse={pulse}
         showSaveStatus={false}
       >
-        <div className="flex flex-col items-center justify-center text-center py-12">
-          <div className="w-16 h-16 rounded-full bg-amber/15 border border-amber/25 flex items-center justify-center mb-6">
-            <svg
-              width="28"
-              height="28"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              className="text-amber-light"
-            >
-              <path
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </div>
-          <h2 className="font-display text-display-md text-warm-white mb-3">
-            You&apos;re all set
-          </h2>
-          <p className="text-warm-muted text-sm max-w-md">
-            Your game is being crafted. In the real flow, this would redirect to
-            Stripe Checkout, and you&apos;d receive your companion page URL via email.
-          </p>
-        </div>
+        <CompletionSummary
+          config={config}
+          state={state}
+          onStartFresh={() => {
+            clearDraft(archetype);
+            setState(null);
+            setHistory([]);
+            setPendingDraft(null);
+          }}
+        />
       </WizardShell>
     );
   }
