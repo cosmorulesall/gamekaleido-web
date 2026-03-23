@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { AnimatePresence } from "framer-motion";
 import type {
   WizardConfig,
@@ -19,6 +19,7 @@ import {
   shouldShowGenerate,
 } from "@/lib/wizard-engine";
 
+import { saveDraft, loadDraft, clearDraft } from "@/lib/wizard-storage";
 import WizardShell from "./WizardShell";
 import EditionPicker from "./EditionPicker";
 import PreviewScreen from "./PreviewScreen";
@@ -42,14 +43,42 @@ import QuestionEditor from "./questions/QuestionEditor";
 
 interface WizardRendererProps {
   config: WizardConfig;
+  archetype: string;
 }
 
-export default function WizardRenderer({ config }: WizardRendererProps) {
+export default function WizardRenderer({ config, archetype }: WizardRendererProps) {
   const [state, setState] = useState<WizardState | null>(null);
   const [history, setHistory] = useState<string[]>([]);
   const [pulse, setPulse] = useState(0);
+  const [draftChecked, setDraftChecked] = useState(false);
+  const [pendingDraft, setPendingDraft] = useState<{ state: WizardState; history: string[]; savedAt: string } | null>(null);
 
-  // Edition not yet selected — show picker
+  // Check for existing draft on mount
+  useEffect(() => {
+    if (!draftChecked) {
+      const draft = loadDraft(archetype);
+      if (draft) {
+        setPendingDraft(draft);
+      }
+      setDraftChecked(true);
+    }
+  }, [archetype, draftChecked]);
+
+  // Auto-save draft on state/history change
+  useEffect(() => {
+    if (state && !state.isComplete) {
+      saveDraft(archetype, state, history);
+    }
+  }, [state, history, archetype]);
+
+  // Clear draft on completion
+  useEffect(() => {
+    if (state?.isComplete) {
+      clearDraft(archetype);
+    }
+  }, [state?.isComplete, archetype]);
+
+  // Edition not yet selected — show picker (or resume prompt)
   if (!state) {
     return (
       <WizardShell
@@ -59,14 +88,55 @@ export default function WizardRenderer({ config }: WizardRendererProps) {
         isPreview={false}
         pulse={pulse}
       >
-        <EditionPicker
-          onSelect={(edition: Edition) => {
-            setState(createInitialState(config, edition));
-            const firstQ = config.sections[0]?.questions[0];
-            if (firstQ) setHistory([firstQ.id]);
-            triggerPulse();
-          }}
-        />
+        {pendingDraft ? (
+          <div className="flex flex-col items-center justify-center text-center py-8">
+            <div className="w-14 h-14 rounded-full bg-amber/15 border border-amber/25 flex items-center justify-center mb-6">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" className="text-amber-light">
+                <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <h2 className="font-display text-display-md text-warm-white mb-2">
+              Welcome back
+            </h2>
+            <p className="text-warm-muted text-sm mb-8 max-w-sm">
+              You have an unfinished draft from{" "}
+              {formatTimeAgo(pendingDraft.savedAt)}. Resume where you left off?
+            </p>
+            <div className="flex items-center gap-4">
+              <button
+                type="button"
+                className="btn-ghost"
+                onClick={() => {
+                  clearDraft(archetype);
+                  setPendingDraft(null);
+                }}
+              >
+                Start fresh
+              </button>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => {
+                  setState(pendingDraft.state);
+                  setHistory(pendingDraft.history);
+                  setPendingDraft(null);
+                  triggerPulse();
+                }}
+              >
+                Resume
+              </button>
+            </div>
+          </div>
+        ) : (
+          <EditionPicker
+            onSelect={(edition: Edition) => {
+              setState(createInitialState(config, edition));
+              const firstQ = config.sections[0]?.questions[0];
+              if (firstQ) setHistory([firstQ.id]);
+              triggerPulse();
+            }}
+          />
+        )}
       </WizardShell>
     );
   }
@@ -201,6 +271,7 @@ export default function WizardRenderer({ config }: WizardRendererProps) {
         mode={state.mode}
         isPreview={true}
         pulse={pulse}
+        showSaveStatus={false}
       >
         <PreviewScreen
           config={config}
@@ -225,6 +296,7 @@ export default function WizardRenderer({ config }: WizardRendererProps) {
         mode={state.mode}
         isPreview={true}
         pulse={pulse}
+        showSaveStatus={false}
       >
         <div className="flex flex-col items-center justify-center text-center py-12">
           <div className="w-16 h-16 rounded-full bg-amber/15 border border-amber/25 flex items-center justify-center mb-6">
@@ -268,6 +340,7 @@ export default function WizardRenderer({ config }: WizardRendererProps) {
       mode={state.mode}
       isPreview={false}
       pulse={pulse}
+      showSaveStatus={true}
     >
       <AnimatePresence mode="wait">
         <QuestionWrapper
@@ -289,6 +362,17 @@ export default function WizardRenderer({ config }: WizardRendererProps) {
       </AnimatePresence>
     </WizardShell>
   );
+}
+
+function formatTimeAgo(isoDate: string): string {
+  const diff = Date.now() - new Date(isoDate).getTime();
+  const minutes = Math.floor(diff / 60000);
+  if (minutes < 1) return "just now";
+  if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"} ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  const days = Math.floor(hours / 24);
+  return `${days} day${days === 1 ? "" : "s"} ago`;
 }
 
 // Dispatch to the correct question type component

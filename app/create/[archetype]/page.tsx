@@ -39,5 +39,5 @@ export default function CreateWizardPage({ params }: PageProps) {
     notFound();
   }
 
-  return <WizardRenderer config={config} />;
+  return <WizardRenderer config={config} archetype={archetypeId} />;
 }

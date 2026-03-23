@@ -10,6 +10,7 @@ interface WizardShellProps {
   mode: WizardMode;
   isPreview: boolean;
   pulse: number;
+  showSaveStatus?: boolean;
   children: React.ReactNode;
 }
 
@@ -19,6 +20,7 @@ export default function WizardShell({
   mode,
   isPreview,
   pulse,
+  showSaveStatus,
   children,
 }: WizardShellProps) {
   return (
@@ -64,9 +66,11 @@ export default function WizardShell({
         </div>
 
         {/* Footer */}
-        <p className="mt-8 text-warm-muted/20 text-xs">
-          Your progress is saved automatically
-        </p>
+        {showSaveStatus && (
+          <p className="mt-8 text-warm-muted/20 text-xs">
+            Your progress is saved automatically
+          </p>
+        )}
       </div>
     </div>
   );
