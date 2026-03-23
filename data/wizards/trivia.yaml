@@ -1,0 +1,385 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Gamekaleido — Wizard Question Tree
+# Archetype: Trivia
+# Version:   1.0
+# Updated:   2026-03-22
+#
+# NOTE: Trivia's personalisation power comes almost entirely from the
+# personal_facts question. The wizard should feel like an encouraging
+# conversation, not a form. Push users to share generously here.
+# ══════════════════════════════════════════════════════════════════════════════
+
+wizard:
+  archetype: trivia
+  archetype_version: "1.0"
+  generate_remaining_enabled: true
+  preview_before_payment: true
+  estimated_time_quick: "4–6 minutes"
+  estimated_time_hybrid: "10–15 minutes"
+  estimated_time_full: "20–25 minutes"
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 1 — Purpose
+# ══════════════════════════════════════════════════════════════════════════════
+
+sections:
+  - id: s1_purpose
+    title: "Let's get started"
+    subtitle: "A couple of quick questions before we dive in."
+    questions:
+
+      - id: q_purpose
+        mode: always
+        type: single_choice
+        text: "Is this a gift, or are you making it for yourself and your group?"
+        required: true
+        options:
+          - label: "It's a gift 🎁"
+            value: gift
+            next: q_recipient_name
+          - label: "It's for us 🎲"
+            value: self
+            next: q_about_group
+        maps_to: null
+
+      # ── Gift path ──────────────────────────────────────────────────────────
+
+      - id: q_recipient_name
+        mode: always
+        type: text_short
+        text: "Who is it for?"
+        placeholder: "e.g. Mum & Dad, The Hendersons, Sarah"
+        required: true
+        next: q_occasion
+        maps_to: personalisation.recipient_name
+
+      - id: q_occasion
+        mode: always
+        type: single_choice
+        text: "What's the occasion?"
+        required: false
+        options:
+          - label: "Birthday 🎂"            value: birthday
+          - label: "Anniversary 💍"          value: anniversary
+          - label: "Christmas 🎄"            value: christmas
+          - label: "Wedding / Engagement 💒" value: wedding
+          - label: "Retirement 🌅"           value: retirement
+          - label: "Just because ✨"         value: just_because
+          - label: "Other"                   value: other
+        show_other_input_if: other
+        next: q_personal_facts_gift
+        maps_to: personalisation.occasion
+
+      - id: q_personal_facts_gift
+        mode: always
+        type: text_long
+        text: "Tell us everything about them — the more you share, the better the questions"
+        sublabel: >
+          This is the most important question in the whole wizard. The personal category
+          (the pink one) will be built entirely from what you write here.
+        placeholder: >
+          e.g. Mum and Dad have been married for 35 years. Dad proposed at the Eiffel Tower
+          but nearly dropped the ring. Mum hates mushrooms but pretends to like them at
+          restaurants. Dad thinks he's a great cook — he's not. Their first dance was to
+          'Can't Help Falling in Love'. Mum grew up in Cork, Dad in Glasgow...
+        hint: "Memories, stories, habits, preferences, arguments, in-jokes, shared experiences — all of it is useful."
+        required: false
+        generatable: false
+        next: SECTION_END
+        maps_to: personalisation.personal_facts
+
+      # ── Self path ──────────────────────────────────────────────────────────
+
+      - id: q_about_group
+        mode: always
+        type: text_long
+        text: "Tell us about your group — the more detail you give, the more personal the questions"
+        sublabel: >
+          This is the heart of your game. The personal category will be built entirely
+          from what you write here.
+        placeholder: >
+          e.g. Four friends from Bristol who've known each other since school. We've been
+          doing a holiday together every year since 2015. Jamie is obsessed with Oasis.
+          Priya always wins at board games and never lets anyone forget it. Our group chat
+          is called 'The Legends' ironically...
+        hint: "Names, memories, habits, obsessions, in-jokes — nothing is too small."
+        required: false
+        generatable: false
+        next: SECTION_END
+        maps_to: personalisation.personal_facts
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 2 — Configuration depth
+# ══════════════════════════════════════════════════════════════════════════════
+
+  - id: s2_mode
+    title: "How hands-on do you want to be?"
+    subtitle: "You can always change your mind as you go."
+    questions:
+
+      - id: q_mode_selector
+        mode: always
+        type: mode_selector
+        text: "How would you like to build your game?"
+        required: true
+        options:
+          - label: "Keep it simple"
+            sublabel: "Give us the basics and our AI handles the rest. Done in under 5 minutes."
+            value: quick
+            next: SECTION_END
+          - label: "Start me off, I'll adjust"
+            sublabel: "We'll pre-fill suggestions — you tweak what matters. Recommended. ⭐"
+            value: hybrid
+            next: SECTION_END
+          - label: "I want full control"
+            sublabel: "You review and edit every question and category yourself."
+            value: full
+            next: SECTION_END
+        maps_to: null
+        default: hybrid
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 3 — The Game
+# ══════════════════════════════════════════════════════════════════════════════
+
+  - id: s3_game
+    title: "Your game"
+    subtitle: "The basics that go on the box and board."
+    questions:
+
+      - id: q_game_name
+        mode: always
+        type: text_short
+        text: "What would you like to call the game?"
+        placeholder: "e.g. Know Your Hendersons, The Emma & Jack Files, Legends Quiz"
+        required: true
+        generatable: true
+        generate_prompt: >
+          Suggest a creative trivia game name for a game about '{{theme}}'.
+          It should feel warm, personal, and like a real game title. Offer 3 options.
+        next: q_theme
+        maps_to: personalisation.game_name
+
+      - id: q_theme
+        mode: always
+        type: text_short
+        text: "How would you describe the overall theme or world of this game?"
+        placeholder: "e.g. our 10-year relationship, the Henderson family, 90s kids, life in Dublin"
+        hint: "This shapes the non-personal categories — pop culture, history, places — so they feel relevant."
+        required: true
+        generatable: false
+        next: SECTION_END
+        maps_to: personalisation.theme
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 4 — The Look
+# ══════════════════════════════════════════════════════════════════════════════
+
+  - id: s4_look
+    title: "How should it look?"
+    subtitle: "Set the visual direction for your board and card decks."
+    questions:
+
+      - id: q_style
+        mode: always
+        type: style_picker
+        text: "Pick a visual style"
+        required: false
+        options:
+          - value: retro_vintage
+            label: "Retro & Vintage"
+            description: "Warm tones, serif type, old-school charm"
+          - value: modern_minimal
+            label: "Modern & Minimal"
+            description: "Clean lines, bold typography, understated"
+          - value: illustrated
+            label: "Illustrated"
+            description: "Hand-drawn feel, whimsical and characterful"
+          - value: cinematic
+            label: "Cinematic"
+            description: "Rich textures, dramatic, immersive"
+          - value: playful_cartoon
+            label: "Playful & Cartoon"
+            description: "Bright, bold, expressive and fun"
+          - value: elegant_luxury
+            label: "Elegant & Luxury"
+            description: "Gold accents, premium, sophisticated"
+        allow_freeform: true
+        freeform_label: "Or describe it in your own words"
+        freeform_placeholder: "e.g. like a Wes Anderson film, cosy and warm, bold and colourful"
+        next: q_colours
+        maps_to: personalisation.art_style
+
+      - id: q_colours
+        mode: always
+        type: colour_palette
+        text: "Any colours we should use?"
+        sublabel: "Pick up to 3. We'll build the category colour system around these."
+        required: false
+        max_selections: 3
+        show_hex_input: true
+        generatable: true
+        generate_prompt: >
+          Suggest a 3-colour palette fitting the theme '{{theme}}' and style '{{art_style}}'.
+          Return as hex codes with brief labels.
+        next: SECTION_END
+        maps_to: personalisation.colour_preferences
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 5 — The Players & Interests
+# ══════════════════════════════════════════════════════════════════════════════
+
+  - id: s5_players
+    title: "Who's playing?"
+    subtitle: "Player names and interests help us personalise the questions."
+    questions:
+
+      - id: q_player_names
+        mode: always
+        type: tag_input
+        text: "Add your players"
+        placeholder: "Type a name and press Enter"
+        min_items: 2
+        max_items: 8
+        required: true
+        generatable: false
+        next: q_player_interests
+        maps_to: personalisation.player_names
+
+      - id: q_player_interests
+        mode: always
+        type: text_long
+        text: "Any interests, hobbies, or passions the group shares?"
+        placeholder: "e.g. Formula 1, hiking, 80s music, terrible reality TV, cooking, Arsenal FC"
+        hint: "These help us tailor the Sports & Leisure and Pop Culture categories to your group."
+        required: false
+        generatable: false
+        next: q_difficulty
+        maps_to: personalisation.player_interests
+
+      - id: q_difficulty
+        mode: always
+        type: single_choice
+        text: "How hard should the questions be?"
+        required: false
+        options:
+          - label: "Easy — fun for everyone, no one gets left behind"
+            value: easy
+          - label: "Balanced — a good mix, something for everyone"
+            value: balanced
+          - label: "Hard — we take trivia seriously around here"
+            value: hard
+        default: balanced
+        next: SECTION_END
+        maps_to: personalisation.difficulty_preference
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 6 — Configure Categories (configurable mode only)
+# ══════════════════════════════════════════════════════════════════════════════
+
+  - id: s6_configure
+    title: "Customise your categories"
+    subtitle: "Review and rename your six categories. Edit or regenerate any questions."
+    mode: configurable
+    questions:
+
+      - id: q_category_names
+        mode: configurable
+        type: category_name_editor     # shows 6 category name fields, pre-filled by AI
+        text: "Your category names"
+        sublabel: >
+          We've suggested names for each of your 6 categories based on your theme and group.
+          Edit any that don't feel right.
+        generatable: true
+        generate_prompt: >
+          Name 6 trivia categories for a game about '{{theme}}' with players '{{player_names}}'.
+          The personal category should feel most intimate and specific to the group.
+          Categories: personal, pop_culture, history_and_places, science_and_nature,
+          sports_and_leisure, food_and_drink.
+        next: q_question_preview
+        maps_to: personalisation.category_names
+
+      - id: q_question_preview
+        mode: configurable
+        type: question_editor          # shows generated questions grouped by category; editable
+        text: "Your questions"
+        sublabel: >
+          We've generated 30 questions per category (180 total). The personal category
+          is based entirely on what you told us about your group — check these carefully.
+          Edit, delete, or regenerate any questions you'd like to change.
+        generatable: true              # "Regenerate Category" button per category
+        generate_prompt: >
+          Generate trivia questions based on the category, theme '{{theme}}',
+          personal_facts '{{personal_facts}}', and difficulty '{{difficulty_preference}}'.
+          Each question needs: text, 4 options, correct_answer index, difficulty, optional fun_fact.
+        required: false
+        next: q_forfeit_preview
+        maps_to: personalisation.questions
+
+      - id: q_forfeit_preview
+        mode: configurable
+        type: card_editor
+        text: "Your forfeit cards (×10)"
+        sublabel: >
+          These appear on penalty spaces. Players who land there must answer correctly
+          or complete a forfeit. We've written 10 themed forfeits — edit freely.
+        generatable: true
+        generate_prompt: >
+          Generate 10 fun, themed forfeit prompts for a trivia game about '{{theme}}'.
+          Forfeits should be light, social, and suitable for the group. Reference player
+          names from '{{player_names}}' where appropriate.
+        required: false
+        next: SECTION_END
+        maps_to: personalisation.forfeit_cards
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 7 — Final Touches
+# ══════════════════════════════════════════════════════════════════════════════
+
+  - id: s7_final
+    title: "Almost there"
+    subtitle: "Last chance to add anything before we show you your game."
+    questions:
+
+      - id: q_special_requests
+        mode: always
+        type: text_long
+        text: "Anything else you'd like us to know?"
+        placeholder: "e.g. Please don't include questions about football. Make the personal questions funny, not sentimental."
+        required: false
+        generatable: false
+        next: q_edition_confirm
+        maps_to: personalisation.special_requests
+
+      - id: q_edition_confirm
+        mode: always
+        type: info
+        text: "You're ordering the {{edition}} Edition"
+        sublabel_digital: "You'll receive a companion page URL and downloadable print files."
+        sublabel_physical: "Your fully printed game will be manufactured and shipped to you."
+        next: PREVIEW
+        maps_to: null
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PREVIEW SCREEN
+# ══════════════════════════════════════════════════════════════════════════════
+
+preview:
+  title: "Here's a taste of your game"
+  description: "A sample of what's coming — the full question set gets built after you order."
+  shows:
+    - game_name
+    - category_names_with_colours
+    - sample_personal_questions: 3     # show 3 personal category questions as a teaser
+    - player_count
+    - question_count_confirmed
+  cta_label: "Looks great — let's go!"
+  edit_link: true

@@ -1,0 +1,322 @@
+{
+  "wizard": {
+    "archetype": "trivia",
+    "archetype_version": "1.0",
+    "generate_remaining_enabled": true,
+    "preview_before_payment": true,
+    "estimated_time_quick": "4–6 minutes",
+    "estimated_time_hybrid": "10–15 minutes",
+    "estimated_time_full": "20–25 minutes"
+  },
+  "sections": [
+    {
+      "id": "s1_purpose",
+      "title": "Let's get started",
+      "subtitle": "A couple of quick questions before we dive in.",
+      "questions": [
+        {
+          "id": "q_purpose",
+          "mode": "always",
+          "type": "single_choice",
+          "text": "Is this a gift, or are you making it for yourself and your group?",
+          "required": true,
+          "options": [
+            { "label": "It's a gift", "value": "gift", "next": "q_recipient_name" },
+            { "label": "It's for us", "value": "self", "next": "q_about_group" }
+          ],
+          "maps_to": null
+        },
+        {
+          "id": "q_recipient_name",
+          "mode": "always",
+          "type": "text_short",
+          "text": "Who is it for?",
+          "placeholder": "e.g. Mum & Dad, The Hendersons, Sarah",
+          "required": true,
+          "next": "q_occasion",
+          "maps_to": "personalisation.recipient_name"
+        },
+        {
+          "id": "q_occasion",
+          "mode": "always",
+          "type": "single_choice",
+          "text": "What's the occasion?",
+          "required": false,
+          "options": [
+            { "label": "Birthday", "value": "birthday" },
+            { "label": "Anniversary", "value": "anniversary" },
+            { "label": "Christmas", "value": "christmas" },
+            { "label": "Wedding / Engagement", "value": "wedding" },
+            { "label": "Retirement", "value": "retirement" },
+            { "label": "Just because", "value": "just_because" },
+            { "label": "Other", "value": "other" }
+          ],
+          "show_other_input_if": "other",
+          "next": "q_personal_facts_gift",
+          "maps_to": "personalisation.occasion"
+        },
+        {
+          "id": "q_personal_facts_gift",
+          "mode": "always",
+          "type": "text_long",
+          "text": "Tell us everything about them — the more you share, the better the questions",
+          "sublabel": "This is the most important question in the whole wizard. The personal category will be built entirely from what you write here.",
+          "placeholder": "e.g. Mum and Dad have been married for 35 years. Dad proposed at the Eiffel Tower but nearly dropped the ring...",
+          "hint": "Memories, stories, habits, preferences, arguments, in-jokes, shared experiences — all of it is useful.",
+          "required": false,
+          "generatable": false,
+          "next": "SECTION_END",
+          "maps_to": "personalisation.personal_facts"
+        },
+        {
+          "id": "q_about_group",
+          "mode": "always",
+          "type": "text_long",
+          "text": "Tell us about your group — the more detail you give, the more personal the questions",
+          "sublabel": "This is the heart of your game. The personal category will be built entirely from what you write here.",
+          "placeholder": "e.g. Four friends from Bristol who've known each other since school...",
+          "hint": "Names, memories, habits, obsessions, in-jokes — nothing is too small.",
+          "required": false,
+          "generatable": false,
+          "next": "SECTION_END",
+          "maps_to": "personalisation.personal_facts"
+        }
+      ]
+    },
+    {
+      "id": "s2_mode",
+      "title": "How hands-on do you want to be?",
+      "subtitle": "You can always change your mind as you go.",
+      "questions": [
+        {
+          "id": "q_mode_selector",
+          "mode": "always",
+          "type": "mode_selector",
+          "text": "How would you like to build your game?",
+          "required": true,
+          "options": [
+            {
+              "label": "Keep it simple",
+              "sublabel": "Give us the basics and our AI handles the rest. Done in under 5 minutes.",
+              "value": "quick",
+              "next": "SECTION_END"
+            },
+            {
+              "label": "Start me off, I'll adjust",
+              "sublabel": "We'll pre-fill suggestions — you tweak what matters. Recommended.",
+              "value": "hybrid",
+              "next": "SECTION_END"
+            },
+            {
+              "label": "I want full control",
+              "sublabel": "You review and edit every question and category yourself.",
+              "value": "full",
+              "next": "SECTION_END"
+            }
+          ],
+          "default": "hybrid",
+          "maps_to": null
+        }
+      ]
+    },
+    {
+      "id": "s3_game",
+      "title": "Your game",
+      "subtitle": "The basics that go on the box and board.",
+      "questions": [
+        {
+          "id": "q_game_name",
+          "mode": "always",
+          "type": "text_short",
+          "text": "What would you like to call the game?",
+          "placeholder": "e.g. Know Your Hendersons, The Emma & Jack Files, Legends Quiz",
+          "required": true,
+          "generatable": true,
+          "generate_prompt": "Suggest a creative trivia game name. Offer 3 options.",
+          "next": "q_theme",
+          "maps_to": "personalisation.game_name"
+        },
+        {
+          "id": "q_theme",
+          "mode": "always",
+          "type": "text_short",
+          "text": "How would you describe the overall theme or world of this game?",
+          "placeholder": "e.g. our 10-year relationship, the Henderson family, 90s kids, life in Dublin",
+          "hint": "This shapes the non-personal categories so they feel relevant.",
+          "required": true,
+          "generatable": false,
+          "next": "SECTION_END",
+          "maps_to": "personalisation.theme"
+        }
+      ]
+    },
+    {
+      "id": "s4_look",
+      "title": "How should it look?",
+      "subtitle": "Set the visual direction for your board and card decks.",
+      "questions": [
+        {
+          "id": "q_style",
+          "mode": "always",
+          "type": "style_picker",
+          "text": "Pick a visual style",
+          "required": false,
+          "options": [
+            { "value": "retro_vintage", "label": "Retro & Vintage", "description": "Warm tones, serif type, old-school charm" },
+            { "value": "modern_minimal", "label": "Modern & Minimal", "description": "Clean lines, bold typography, understated" },
+            { "value": "illustrated", "label": "Illustrated", "description": "Hand-drawn feel, whimsical and characterful" },
+            { "value": "cinematic", "label": "Cinematic", "description": "Rich textures, dramatic, immersive" },
+            { "value": "playful_cartoon", "label": "Playful & Cartoon", "description": "Bright, bold, expressive and fun" },
+            { "value": "elegant_luxury", "label": "Elegant & Luxury", "description": "Gold accents, premium, sophisticated" }
+          ],
+          "allow_freeform": true,
+          "freeform_label": "Or describe it in your own words",
+          "freeform_placeholder": "e.g. like a Wes Anderson film, cosy and warm, bold and colourful",
+          "next": "q_colours",
+          "maps_to": "personalisation.art_style"
+        },
+        {
+          "id": "q_colours",
+          "mode": "always",
+          "type": "colour_palette",
+          "text": "Any colours we should use?",
+          "sublabel": "Pick up to 3. We'll build the category colour system around these.",
+          "required": false,
+          "max_selections": 3,
+          "show_hex_input": true,
+          "generatable": true,
+          "generate_prompt": "Suggest a 3-colour palette fitting the theme and style.",
+          "next": "SECTION_END",
+          "maps_to": "personalisation.colour_preferences"
+        }
+      ]
+    },
+    {
+      "id": "s5_players",
+      "title": "Who's playing?",
+      "subtitle": "Player names and interests help us personalise the questions.",
+      "questions": [
+        {
+          "id": "q_player_names",
+          "mode": "always",
+          "type": "tag_input",
+          "text": "Add your players",
+          "placeholder": "Type a name and press Enter",
+          "min_items": 2,
+          "max_items": 8,
+          "required": true,
+          "generatable": false,
+          "next": "q_player_interests",
+          "maps_to": "personalisation.player_names"
+        },
+        {
+          "id": "q_player_interests",
+          "mode": "always",
+          "type": "text_long",
+          "text": "Any interests, hobbies, or passions the group shares?",
+          "placeholder": "e.g. Formula 1, hiking, 80s music, terrible reality TV, cooking, Arsenal FC",
+          "hint": "These help us tailor the Sports & Leisure and Pop Culture categories to your group.",
+          "required": false,
+          "generatable": false,
+          "next": "q_difficulty",
+          "maps_to": "personalisation.player_interests"
+        },
+        {
+          "id": "q_difficulty",
+          "mode": "always",
+          "type": "single_choice",
+          "text": "How hard should the questions be?",
+          "required": false,
+          "options": [
+            { "label": "Easy — fun for everyone, no one gets left behind", "value": "easy" },
+            { "label": "Balanced — a good mix, something for everyone", "value": "balanced" },
+            { "label": "Hard — we take trivia seriously around here", "value": "hard" }
+          ],
+          "default": "balanced",
+          "next": "SECTION_END",
+          "maps_to": "personalisation.difficulty_preference"
+        }
+      ]
+    },
+    {
+      "id": "s6_configure",
+      "title": "Customise your categories",
+      "subtitle": "Review and rename your six categories. Edit or regenerate any questions.",
+      "mode": "configurable",
+      "questions": [
+        {
+          "id": "q_category_names",
+          "mode": "configurable",
+          "type": "category_name_editor",
+          "text": "Your category names",
+          "sublabel": "We've suggested names for each of your 6 categories. Edit any that don't feel right.",
+          "generatable": true,
+          "generate_prompt": "Name 6 trivia categories for the game theme and players.",
+          "required": false,
+          "next": "q_question_preview",
+          "maps_to": "personalisation.category_names"
+        },
+        {
+          "id": "q_question_preview",
+          "mode": "configurable",
+          "type": "question_editor",
+          "text": "Your questions",
+          "sublabel": "We've generated 30 questions per category (180 total). Edit, delete, or regenerate any you'd like to change.",
+          "generatable": true,
+          "generate_prompt": "Generate trivia questions for the category, theme, and difficulty.",
+          "required": false,
+          "next": "q_forfeit_preview",
+          "maps_to": "personalisation.questions"
+        },
+        {
+          "id": "q_forfeit_preview",
+          "mode": "configurable",
+          "type": "card_editor",
+          "text": "Your forfeit cards (x10)",
+          "sublabel": "These appear on penalty spaces. We've written 10 themed forfeits — edit freely.",
+          "generatable": true,
+          "generate_prompt": "Generate 10 fun, themed forfeit prompts for the trivia game.",
+          "required": false,
+          "next": "SECTION_END",
+          "maps_to": "personalisation.forfeit_cards"
+        }
+      ]
+    },
+    {
+      "id": "s7_final",
+      "title": "Almost there",
+      "subtitle": "Last chance to add anything before we show you your game.",
+      "questions": [
+        {
+          "id": "q_special_requests",
+          "mode": "always",
+          "type": "text_long",
+          "text": "Anything else you'd like us to know?",
+          "placeholder": "e.g. Please don't include questions about football. Make the personal questions funny, not sentimental.",
+          "required": false,
+          "generatable": false,
+          "next": "q_edition_confirm",
+          "maps_to": "personalisation.special_requests"
+        },
+        {
+          "id": "q_edition_confirm",
+          "mode": "always",
+          "type": "info",
+          "text": "You're ordering the {{edition}} Edition",
+          "sublabel_digital": "You'll receive a companion page URL and downloadable print files.",
+          "sublabel_physical": "Your fully printed game will be manufactured and shipped to you.",
+          "required": false,
+          "next": "PREVIEW",
+          "maps_to": null
+        }
+      ]
+    }
+  ],
+  "preview": {
+    "title": "Here's a taste of your game",
+    "description": "A sample of what's coming — the full question set gets built after you order.",
+    "shows": ["game_name", "category_names_with_colours", { "sample_personal_questions": 3 }, "player_count", "question_count_confirmed"],
+    "cta_label": "Looks great — let's go!",
+    "edit_link": true
+  }
+}

@@ -1,0 +1,489 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# Gamekaleido — Wizard Question Tree
+# Archetype: Property Trading
+# Version:   1.0
+# Updated:   2026-03-22
+#
+# PURPOSE: Defines every question shown to the customer during the ordering
+# wizard. The frontend renders this generically — it has no archetype-specific
+# logic. Branching, mode filtering, and generate buttons are all driven here.
+#
+# MODES:
+#   quick        → user answered mode_selector with "quick"; skip configurable questions
+#   hybrid       → show configurable questions with per-field generate buttons (default)
+#   full         → show configurable questions, no auto-generate prompts shown
+#
+# QUESTION VISIBILITY:
+#   mode: always        → shown in all modes
+#   mode: configurable  → shown in hybrid and full modes only
+#
+# BRANCHING:
+#   next: <question_id>         → unconditional next question
+#   next:                       → conditional: map of answer_value → question_id
+#     gift: q_recipient_name
+#     self: q_about_group
+#   next: SECTION_END           → advance to next section
+#   next: PREVIEW               → jump to preview screen
+#
+# GENERATABLE FIELDS:
+#   generatable: true   → a "Generate for me" button appears next to this field
+#   generate_prompt     → instruction sent to AI when generate is triggered
+# ══════════════════════════════════════════════════════════════════════════════
+
+wizard:
+  archetype: property_trading
+  archetype_version: "1.0"
+  generate_remaining_enabled: true    # "Generate Everything" / "Generate Remaining" button always available
+  preview_before_payment: true
+  estimated_time_quick: "4–6 minutes"
+  estimated_time_hybrid: "10–15 minutes"
+  estimated_time_full: "20–30 minutes"
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 1 — Purpose
+# ══════════════════════════════════════════════════════════════════════════════
+
+sections:
+  - id: s1_purpose
+    title: "Let's get started"
+    subtitle: "A couple of quick questions before we dive in."
+    questions:
+
+      - id: q_purpose
+        mode: always
+        type: single_choice
+        text: "Is this game a gift, or are you making it for yourself and your group?"
+        required: true
+        options:
+          - label: "It's a gift 🎁"
+            value: gift
+            next: q_recipient_name
+          - label: "It's for us 🎲"
+            value: self
+            next: q_about_group
+        maps_to: null                  # meta question — informs tone, doesn't map to a field
+
+      # ── Gift path ──────────────────────────────────────────────────────────
+
+      - id: q_recipient_name
+        mode: always
+        type: text_short
+        text: "Who is it for?"
+        placeholder: "e.g. Emma, The Johnsons, Mum & Dad"
+        required: true
+        next: q_occasion
+        maps_to: personalisation.recipient_name
+
+      - id: q_occasion
+        mode: always
+        type: single_choice
+        text: "What's the occasion?"
+        required: false
+        options:
+          - label: "Birthday 🎂"            value: birthday
+          - label: "Anniversary 💍"          value: anniversary
+          - label: "Christmas 🎄"            value: christmas
+          - label: "Wedding / Engagement 💒" value: wedding
+          - label: "Retirement 🌅"           value: retirement
+          - label: "Just because ✨"         value: just_because
+          - label: "Other"                   value: other
+        show_other_input_if: other
+        next: q_about_recipient
+        maps_to: personalisation.occasion
+
+      - id: q_about_recipient
+        mode: always
+        type: text_long
+        text: "Tell us about them — who are they? What do they love? Any memories, places, or in-jokes we should know about?"
+        placeholder: "e.g. Emma and Jack have been together 8 years. They met at a pub quiz in Brighton. They're obsessed with road trips and always argue about who picks the music..."
+        hint: "The more you share, the more personal the game will feel. Nothing is too random."
+        required: false
+        generatable: false             # this is the human's input — AI can't generate it
+        next: SECTION_END
+        maps_to: personalisation.inspiration_notes
+
+      # ── Self path ──────────────────────────────────────────────────────────
+
+      - id: q_about_group
+        mode: always
+        type: text_long
+        text: "Tell us about your group — who's playing? What's your thing? Any shared memories, places, or in-jokes?"
+        placeholder: "e.g. Four friends from uni, obsessed with football and terrible at cooking. We've been doing a pub quiz every Thursday for five years..."
+        hint: "The more detail you give us, the more the game will feel like it was made just for you."
+        required: false
+        generatable: false
+        next: SECTION_END
+        maps_to: personalisation.inspiration_notes
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 2 — Configuration depth
+# ══════════════════════════════════════════════════════════════════════════════
+
+  - id: s2_mode
+    title: "How hands-on do you want to be?"
+    subtitle: "You can always change your mind as you go."
+    questions:
+
+      - id: q_mode_selector
+        mode: always
+        type: mode_selector            # special type — sets the mode for all subsequent questions
+        text: "How would you like to build your game?"
+        required: true
+        options:
+          - label: "Keep it simple"
+            sublabel: "Give us the basics and our AI handles the rest. Done in under 5 minutes."
+            value: quick
+            next: SECTION_END
+          - label: "Start me off, I'll adjust"
+            sublabel: "We'll pre-fill suggestions — you tweak what matters to you. Recommended. ⭐"
+            value: hybrid
+            next: SECTION_END
+          - label: "I want full control"
+            sublabel: "You fill in every property name, card, and detail yourself."
+            value: full
+            next: SECTION_END
+        maps_to: null                  # controls rendering, not game content
+        default: hybrid
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 3 — The World
+# ══════════════════════════════════════════════════════════════════════════════
+
+  - id: s3_world
+    title: "The world of your game"
+    subtitle: "This is where your game gets its personality."
+    questions:
+
+      - id: q_theme
+        mode: always
+        type: text_short
+        text: "What is your game's world or theme?"
+        placeholder: "e.g. Taylor Swift eras, Bristol in the 90s, our relationship, Game of Thrones"
+        hint: "Think of this as the universe your game lives in. It shapes everything — the names, the cards, the mood."
+        required: true
+        generatable: false             # must come from user
+        next: q_sentimental_places
+        maps_to: personalisation.theme
+
+      - id: q_sentimental_places
+        mode: always
+        type: place_input              # tag-style: add places one by one, optional note per place
+        text: "Any places that should be on the board?"
+        sublabel: "Streets, pubs, cities, venues, landmarks — places that mean something to you or the recipient. These become your properties."
+        hint: "Add as many or as few as you like. We'll fill the rest with places that match your theme."
+        placeholder_name: "e.g. The Anchor Pub, Brighton seafront, Grandma's street"
+        placeholder_note: "Why it matters (optional)"
+        required: false
+        generatable: false             # user's memories — can't be generated
+        max_items: 30                  # max personalised places (there are 28 purchasable spaces)
+        next: q_inspiration_extras
+        maps_to: personalisation.sentimental_places
+
+      - id: q_inspiration_extras
+        mode: always
+        type: text_long
+        text: "Anything else that should inspire the game?"
+        sublabel: "Inside jokes, favourite things, shared obsessions, specific people — anything goes."
+        placeholder: "e.g. Dave always loses at Monopoly and we never let him forget it. Our dog is called Biscuit. We're all massive Bowie fans."
+        required: false
+        generatable: false
+        next: SECTION_END
+        maps_to: personalisation.inspiration_extras
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 4 — The Look
+# ══════════════════════════════════════════════════════════════════════════════
+
+  - id: s4_look
+    title: "How should it look?"
+    subtitle: "Set the visual direction for your board."
+    questions:
+
+      - id: q_style
+        mode: always
+        type: style_picker             # grid of visual style cards with labels + descriptors
+        text: "Pick a visual style for your game"
+        required: false
+        options:
+          - value: retro_vintage
+            label: "Retro & Vintage"
+            description: "Warm tones, serif type, old-school charm"
+          - value: modern_minimal
+            label: "Modern & Minimal"
+            description: "Clean lines, bold typography, understated"
+          - value: illustrated
+            label: "Illustrated"
+            description: "Hand-drawn feel, whimsical and characterful"
+          - value: cinematic
+            label: "Cinematic"
+            description: "Rich textures, dramatic lighting, immersive"
+          - value: playful_cartoon
+            label: "Playful & Cartoon"
+            description: "Bright, bold, expressive and fun"
+          - value: elegant_luxury
+            label: "Elegant & Luxury"
+            description: "Gold accents, premium feel, sophisticated"
+        allow_freeform: true
+        freeform_label: "Or describe it in your own words"
+        freeform_placeholder: "e.g. dark academia, cottagecore, 80s neon, something that feels like a Wes Anderson film"
+        next: q_colours
+        maps_to: personalisation.art_style
+
+      - id: q_colours
+        mode: always
+        type: colour_palette
+        text: "Any colours we should use?"
+        sublabel: "Pick up to 3 colours. We'll build the board's palette around these."
+        required: false
+        max_selections: 3
+        show_hex_input: true           # allow custom hex input alongside swatches
+        generatable: true
+        generate_prompt: >
+          Suggest a 3-colour palette that fits the theme '{{theme}}' and style '{{art_style}}'.
+          Return as hex codes with brief labels.
+        next: SECTION_END
+        maps_to: personalisation.colour_preferences
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 5 — The Game
+# ══════════════════════════════════════════════════════════════════════════════
+
+  - id: s5_game
+    title: "Name your game"
+    subtitle: "The details that go on the board itself."
+    questions:
+
+      - id: q_board_name
+        mode: always
+        type: text_short
+        text: "What would you like to call the game?"
+        placeholder: "e.g. Swiftopolis, Bristololy, The Love Game"
+        required: true
+        generatable: true
+        generate_prompt: >
+          Suggest a creative, punchy game name based on the theme '{{theme}}'.
+          It should feel like a proper board game title — fun, memorable, and
+          thematically right. Offer 3 options.
+        next: q_currency_name
+        maps_to: personalisation.board_name
+
+      - id: q_currency_name
+        mode: always
+        type: text_short
+        text: "What's your in-game currency called?"
+        placeholder: "e.g. Swifties, Bristols, Love Bucks, Dragons"
+        hint: "This replaces 'pounds' or 'dollars' on the board and money cards."
+        required: true
+        generatable: true
+        generate_prompt: >
+          Suggest a fun, thematic currency name for a game themed around '{{theme}}'.
+          Should be one or two words, feel natural as 'pay 200 {{currency}}', and fit the world.
+          Offer 3 options.
+        next: SECTION_END
+        maps_to: personalisation.currency_name
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 6 — The Players
+# ══════════════════════════════════════════════════════════════════════════════
+
+  - id: s6_players
+    title: "Who's playing?"
+    subtitle: "Player names appear on the board and in the game assistant."
+    questions:
+
+      - id: q_player_names
+        mode: always
+        type: tag_input                # add/remove tags; each tag = one player name
+        text: "Add your players"
+        placeholder: "Type a name and press Enter"
+        min_items: 2
+        max_items: 6
+        required: true
+        generatable: false             # player names must come from user
+        next: SECTION_END
+        maps_to: personalisation.player_names
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 7 — Configure Your Board (configurable mode only)
+# ══════════════════════════════════════════════════════════════════════════════
+
+  - id: s7_configure
+    title: "Configure your board"
+    subtitle: "Fill in what matters to you. Leave anything blank and we'll generate it."
+    mode: configurable                 # entire section hidden in quick mode
+    questions:
+
+      - id: q_property_grid
+        mode: configurable
+        type: property_grid            # table: colour group rows, name/price columns. Price read-only.
+        text: "Your properties"
+        sublabel: >
+          These are the 22 properties on your board, grouped by colour.
+          Names you entered as sentimental places have been pre-filled where they fit.
+          Edit any, leave blanks for AI to fill.
+        required: false
+        generatable: true              # "Generate Remaining" fills all blank names
+        generate_prompt: >
+          Generate names for all blank properties in the grid. Use the theme '{{theme}}',
+          sentimental places '{{sentimental_places}}', and inspiration notes '{{inspiration_notes}}'.
+          Assign more significant/memorable places to the expensive (dark blue/green) colour groups.
+          Names should feel coherent within each colour group.
+        columns:
+          - field: name       label: "Property Name"   editable: true
+          - field: price      label: "Price"           editable: false   source: archetype_defaults
+        pre_fill_from: personalisation.sentimental_places
+        pre_fill_strategy: >
+          Assign sentimental places to colour groups based on emotional significance
+          if determinable from notes, otherwise distribute evenly starting from mid-range colours.
+        next: q_station_names
+        maps_to: personalisation.spaces[type=property].name
+
+      - id: q_station_names
+        mode: configurable
+        type: name_list                # 4 fixed slots with editable text fields
+        text: "Your stations (×4)"
+        sublabel: "Stations appear at the 4 midpoints of the board."
+        placeholder: "e.g. Victoria Station, King's Cross, The Airport"
+        required: false
+        generatable: true
+        generate_prompt: >
+          Generate 4 station names fitting the theme '{{theme}}'. They should feel like
+          transit hubs or significant arrival points within the game's world.
+        count: 4
+        next: q_utility_names
+        maps_to: personalisation.spaces[type=station].name
+
+      - id: q_utility_names
+        mode: configurable
+        type: name_list                # 2 fixed slots
+        text: "Your utilities (×2)"
+        sublabel: "Utilities are the two 'infrastructure' squares on the board."
+        placeholder: "e.g. The Electric Co., Waterworks, The Wi-Fi Hub"
+        required: false
+        generatable: true
+        generate_prompt: >
+          Generate 2 utility names fitting the theme '{{theme}}'. They should feel like
+          essential services or infrastructure within the game's world. Mildly humorous is fine.
+        count: 2
+        next: q_tax_labels
+        maps_to: personalisation.spaces[type=utility].name
+
+      - id: q_tax_labels
+        mode: configurable
+        type: name_list
+        text: "Your tax squares (×2)"
+        sublabel: "There are two tax squares on the board. Name them to fit your theme."
+        placeholder: "e.g. Spotify Royalties, The Hangover Tax"
+        required: false
+        generatable: true
+        generate_prompt: >
+          Generate 2 tax square names fitting the theme '{{theme}}'. These replace
+          'Income Tax' and 'Luxury Tax'. They should feel thematic and slightly amusing.
+        count: 2
+        next: q_corner_labels
+        maps_to: personalisation.spaces[type=tax].label
+
+      - id: q_corner_labels
+        mode: configurable
+        type: name_list
+        text: "Your corner squares (×4)"
+        sublabel: "The four corners: Go, Jail, Free Parking, and Go to Jail. Rename them to fit your theme if you like."
+        hints:
+          - "GO — where everyone starts and collects on each pass"
+          - "Jail / Just Visiting — the holding square"
+          - "Free Parking — the middle rest stop"
+          - "Go to Jail — the trouble square"
+        required: false
+        generatable: true
+        generate_prompt: >
+          Generate themed names for the 4 corner squares fitting '{{theme}}'.
+          The function of each must remain clear even with a new name.
+          Examples: GO → 'Start Your Journey', Jail → 'The Penalty Box'.
+        count: 4
+        next: q_chance_card_preview
+        maps_to: personalisation.spaces[type=corner].label
+
+      - id: q_chance_card_preview
+        mode: configurable
+        type: card_editor              # shows AI-generated cards; user can edit text per card
+        text: "Your Chance cards"
+        sublabel: "We've generated 16 Chance cards for your theme. Edit any you'd like to personalise further."
+        generated_from: archetype_wizard_agent
+        generatable: true              # "Regenerate All" button available
+        generate_prompt: >
+          Generate 16 Chance cards for a property trading game themed around '{{theme}}'.
+          Use the card effects defined in archetypes/property_trading.yaml.
+          Include all 5 quirky effects at least once. Card text should feel native to the world.
+        required: false
+        next: q_treasury_card_preview
+        maps_to: personalisation.chance_cards
+
+      - id: q_treasury_card_preview
+        mode: configurable
+        type: card_editor
+        text: "Your Treasury cards"
+        sublabel: "16 Treasury cards, pre-generated for your theme. Edit freely."
+        generated_from: archetype_wizard_agent
+        generatable: true
+        generate_prompt: >
+          Generate 16 Treasury cards for a property trading game themed around '{{theme}}'.
+          Treasury cards should feel warmer and more community-spirited than Chance cards.
+          Use effects from archetypes/property_trading.yaml card_decks.treasury.allowed_effects.
+        required: false
+        next: SECTION_END
+        maps_to: personalisation.treasury_cards
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 8 — Final Touches
+# ══════════════════════════════════════════════════════════════════════════════
+
+  - id: s8_final
+    title: "Almost there"
+    subtitle: "Last chance to add anything before we show you your game."
+    questions:
+
+      - id: q_special_requests
+        mode: always
+        type: text_long
+        text: "Anything else you'd like us to know?"
+        placeholder: "e.g. Please avoid any references to X. The recipient hates the colour orange. Make it funny."
+        hint: "This is your chance to give us any final instructions, restrictions, or requests."
+        required: false
+        generatable: false
+        next: q_edition_confirm
+        maps_to: personalisation.special_requests
+
+      - id: q_edition_confirm
+        mode: always
+        type: info                     # read-only confirmation — edition was set before wizard
+        text: "You're ordering the {{edition}} Edition"
+        sublabel_digital: "You'll receive a companion page URL and downloadable print files."
+        sublabel_physical: "Your fully printed game will be manufactured and shipped to you."
+        next: PREVIEW
+        maps_to: null
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# PREVIEW SCREEN
+# ══════════════════════════════════════════════════════════════════════════════
+
+preview:
+  title: "Here's a taste of your game"
+  description: "We've generated one quadrant of your board based on your answers. The full game will be built after you complete your order."
+  shows:
+    - one_quadrant_board_render        # bottom-left quadrant (cheapest properties)
+    - game_name
+    - currency_name
+    - player_count
+    - property_count_confirmed
+    - card_count_confirmed
+  cta_label: "Looks great — let's go!"
+  edit_link: true                      # allow user to go back and edit any section

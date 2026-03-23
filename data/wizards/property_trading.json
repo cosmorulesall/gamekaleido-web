@@ -1,0 +1,402 @@
+{
+  "wizard": {
+    "archetype": "property_trading",
+    "archetype_version": "1.0",
+    "generate_remaining_enabled": true,
+    "preview_before_payment": true,
+    "estimated_time_quick": "4–6 minutes",
+    "estimated_time_hybrid": "10–15 minutes",
+    "estimated_time_full": "20–30 minutes"
+  },
+  "sections": [
+    {
+      "id": "s1_purpose",
+      "title": "Let's get started",
+      "subtitle": "A couple of quick questions before we dive in.",
+      "questions": [
+        {
+          "id": "q_purpose",
+          "mode": "always",
+          "type": "single_choice",
+          "text": "Is this game a gift, or are you making it for yourself and your group?",
+          "required": true,
+          "options": [
+            { "label": "It's a gift", "value": "gift", "next": "q_recipient_name" },
+            { "label": "It's for us", "value": "self", "next": "q_about_group" }
+          ],
+          "maps_to": null
+        },
+        {
+          "id": "q_recipient_name",
+          "mode": "always",
+          "type": "text_short",
+          "text": "Who is it for?",
+          "placeholder": "e.g. Emma, The Johnsons, Mum & Dad",
+          "required": true,
+          "next": "q_occasion",
+          "maps_to": "personalisation.recipient_name"
+        },
+        {
+          "id": "q_occasion",
+          "mode": "always",
+          "type": "single_choice",
+          "text": "What's the occasion?",
+          "required": false,
+          "options": [
+            { "label": "Birthday", "value": "birthday" },
+            { "label": "Anniversary", "value": "anniversary" },
+            { "label": "Christmas", "value": "christmas" },
+            { "label": "Wedding / Engagement", "value": "wedding" },
+            { "label": "Retirement", "value": "retirement" },
+            { "label": "Just because", "value": "just_because" },
+            { "label": "Other", "value": "other" }
+          ],
+          "show_other_input_if": "other",
+          "next": "q_about_recipient",
+          "maps_to": "personalisation.occasion"
+        },
+        {
+          "id": "q_about_recipient",
+          "mode": "always",
+          "type": "text_long",
+          "text": "Tell us about them — who are they? What do they love? Any memories, places, or in-jokes we should know about?",
+          "placeholder": "e.g. Emma and Jack have been together 8 years. They met at a pub quiz in Brighton. They're obsessed with road trips and always argue about who picks the music...",
+          "hint": "The more you share, the more personal the game will feel. Nothing is too random.",
+          "required": false,
+          "generatable": false,
+          "next": "SECTION_END",
+          "maps_to": "personalisation.inspiration_notes"
+        },
+        {
+          "id": "q_about_group",
+          "mode": "always",
+          "type": "text_long",
+          "text": "Tell us about your group — who's playing? What's your thing? Any shared memories, places, or in-jokes?",
+          "placeholder": "e.g. Four friends from uni, obsessed with football and terrible at cooking. We've been doing a pub quiz every Thursday for five years...",
+          "hint": "The more detail you give us, the more the game will feel like it was made just for you.",
+          "required": false,
+          "generatable": false,
+          "next": "SECTION_END",
+          "maps_to": "personalisation.inspiration_notes"
+        }
+      ]
+    },
+    {
+      "id": "s2_mode",
+      "title": "How hands-on do you want to be?",
+      "subtitle": "You can always change your mind as you go.",
+      "questions": [
+        {
+          "id": "q_mode_selector",
+          "mode": "always",
+          "type": "mode_selector",
+          "text": "How would you like to build your game?",
+          "required": true,
+          "options": [
+            {
+              "label": "Keep it simple",
+              "sublabel": "Give us the basics and our AI handles the rest. Done in under 5 minutes.",
+              "value": "quick",
+              "next": "SECTION_END"
+            },
+            {
+              "label": "Start me off, I'll adjust",
+              "sublabel": "We'll pre-fill suggestions — you tweak what matters to you. Recommended.",
+              "value": "hybrid",
+              "next": "SECTION_END"
+            },
+            {
+              "label": "I want full control",
+              "sublabel": "You fill in every property name, card, and detail yourself.",
+              "value": "full",
+              "next": "SECTION_END"
+            }
+          ],
+          "default": "hybrid",
+          "maps_to": null
+        }
+      ]
+    },
+    {
+      "id": "s3_world",
+      "title": "The world of your game",
+      "subtitle": "This is where your game gets its personality.",
+      "questions": [
+        {
+          "id": "q_theme",
+          "mode": "always",
+          "type": "text_short",
+          "text": "What is your game's world or theme?",
+          "placeholder": "e.g. Taylor Swift eras, Bristol in the 90s, our relationship, Game of Thrones",
+          "hint": "Think of this as the universe your game lives in. It shapes everything — the names, the cards, the mood.",
+          "required": true,
+          "generatable": false,
+          "next": "q_sentimental_places",
+          "maps_to": "personalisation.theme"
+        },
+        {
+          "id": "q_sentimental_places",
+          "mode": "always",
+          "type": "place_input",
+          "text": "Any places that should be on the board?",
+          "sublabel": "Streets, pubs, cities, venues, landmarks — places that mean something to you or the recipient. These become your properties.",
+          "hint": "Add as many or as few as you like. We'll fill the rest with places that match your theme.",
+          "placeholder_name": "e.g. The Anchor Pub, Brighton seafront",
+          "placeholder_note": "Why it matters (optional)",
+          "required": false,
+          "generatable": false,
+          "max_items": 30,
+          "next": "q_inspiration_extras",
+          "maps_to": "personalisation.sentimental_places"
+        },
+        {
+          "id": "q_inspiration_extras",
+          "mode": "always",
+          "type": "text_long",
+          "text": "Anything else that should inspire the game?",
+          "sublabel": "Inside jokes, favourite things, shared obsessions, specific people — anything goes.",
+          "placeholder": "e.g. Dave always loses at Monopoly and we never let him forget it. Our dog is called Biscuit.",
+          "required": false,
+          "generatable": false,
+          "next": "SECTION_END",
+          "maps_to": "personalisation.inspiration_extras"
+        }
+      ]
+    },
+    {
+      "id": "s4_look",
+      "title": "How should it look?",
+      "subtitle": "Set the visual direction for your board.",
+      "questions": [
+        {
+          "id": "q_style",
+          "mode": "always",
+          "type": "style_picker",
+          "text": "Pick a visual style for your game",
+          "required": false,
+          "options": [
+            { "value": "retro_vintage", "label": "Retro & Vintage", "description": "Warm tones, serif type, old-school charm" },
+            { "value": "modern_minimal", "label": "Modern & Minimal", "description": "Clean lines, bold typography, understated" },
+            { "value": "illustrated", "label": "Illustrated", "description": "Hand-drawn feel, whimsical and characterful" },
+            { "value": "cinematic", "label": "Cinematic", "description": "Rich textures, dramatic lighting, immersive" },
+            { "value": "playful_cartoon", "label": "Playful & Cartoon", "description": "Bright, bold, expressive and fun" },
+            { "value": "elegant_luxury", "label": "Elegant & Luxury", "description": "Gold accents, premium feel, sophisticated" }
+          ],
+          "allow_freeform": true,
+          "freeform_label": "Or describe it in your own words",
+          "freeform_placeholder": "e.g. dark academia, cottagecore, 80s neon, something that feels like a Wes Anderson film",
+          "next": "q_colours",
+          "maps_to": "personalisation.art_style"
+        },
+        {
+          "id": "q_colours",
+          "mode": "always",
+          "type": "colour_palette",
+          "text": "Any colours we should use?",
+          "sublabel": "Pick up to 3 colours. We'll build the board's palette around these.",
+          "required": false,
+          "max_selections": 3,
+          "show_hex_input": true,
+          "generatable": true,
+          "generate_prompt": "Suggest a 3-colour palette that fits the theme and style. Return as hex codes with brief labels.",
+          "next": "SECTION_END",
+          "maps_to": "personalisation.colour_preferences"
+        }
+      ]
+    },
+    {
+      "id": "s5_game",
+      "title": "Name your game",
+      "subtitle": "The details that go on the board itself.",
+      "questions": [
+        {
+          "id": "q_board_name",
+          "mode": "always",
+          "type": "text_short",
+          "text": "What would you like to call the game?",
+          "placeholder": "e.g. Swiftopolis, Bristololy, The Love Game",
+          "required": true,
+          "generatable": true,
+          "generate_prompt": "Suggest a creative, punchy game name based on the theme. Offer 3 options.",
+          "next": "q_currency_name",
+          "maps_to": "personalisation.board_name"
+        },
+        {
+          "id": "q_currency_name",
+          "mode": "always",
+          "type": "text_short",
+          "text": "What's your in-game currency called?",
+          "placeholder": "e.g. Swifties, Bristols, Love Bucks, Dragons",
+          "hint": "This replaces 'pounds' or 'dollars' on the board and money cards.",
+          "required": true,
+          "generatable": true,
+          "generate_prompt": "Suggest a fun, thematic currency name for the game. Offer 3 options.",
+          "next": "SECTION_END",
+          "maps_to": "personalisation.currency_name"
+        }
+      ]
+    },
+    {
+      "id": "s6_players",
+      "title": "Who's playing?",
+      "subtitle": "Player names appear on the board and in the game assistant.",
+      "questions": [
+        {
+          "id": "q_player_names",
+          "mode": "always",
+          "type": "tag_input",
+          "text": "Add your players",
+          "placeholder": "Type a name and press Enter",
+          "min_items": 2,
+          "max_items": 6,
+          "required": true,
+          "generatable": false,
+          "next": "SECTION_END",
+          "maps_to": "personalisation.player_names"
+        }
+      ]
+    },
+    {
+      "id": "s7_configure",
+      "title": "Configure your board",
+      "subtitle": "Fill in what matters to you. Leave anything blank and we'll generate it.",
+      "mode": "configurable",
+      "questions": [
+        {
+          "id": "q_property_grid",
+          "mode": "configurable",
+          "type": "property_grid",
+          "text": "Your properties",
+          "sublabel": "These are the 22 properties on your board, grouped by colour. Edit any, leave blanks for AI to fill.",
+          "required": false,
+          "generatable": true,
+          "generate_prompt": "Generate names for all blank properties in the grid using the theme and sentimental places.",
+          "next": "q_station_names",
+          "maps_to": "personalisation.property_names"
+        },
+        {
+          "id": "q_station_names",
+          "mode": "configurable",
+          "type": "name_list",
+          "text": "Your stations (x4)",
+          "sublabel": "Stations appear at the 4 midpoints of the board.",
+          "placeholder": "e.g. Victoria Station, King's Cross",
+          "required": false,
+          "generatable": true,
+          "generate_prompt": "Generate 4 station names fitting the theme.",
+          "count": 4,
+          "next": "q_utility_names",
+          "maps_to": "personalisation.station_names"
+        },
+        {
+          "id": "q_utility_names",
+          "mode": "configurable",
+          "type": "name_list",
+          "text": "Your utilities (x2)",
+          "sublabel": "Utilities are the two 'infrastructure' squares on the board.",
+          "placeholder": "e.g. The Electric Co., Waterworks",
+          "required": false,
+          "generatable": true,
+          "generate_prompt": "Generate 2 utility names fitting the theme.",
+          "count": 2,
+          "next": "q_tax_labels",
+          "maps_to": "personalisation.utility_names"
+        },
+        {
+          "id": "q_tax_labels",
+          "mode": "configurable",
+          "type": "name_list",
+          "text": "Your tax squares (x2)",
+          "sublabel": "There are two tax squares on the board. Name them to fit your theme.",
+          "placeholder": "e.g. Spotify Royalties, The Hangover Tax",
+          "required": false,
+          "generatable": true,
+          "generate_prompt": "Generate 2 tax square names fitting the theme.",
+          "count": 2,
+          "next": "q_corner_labels",
+          "maps_to": "personalisation.tax_labels"
+        },
+        {
+          "id": "q_corner_labels",
+          "mode": "configurable",
+          "type": "name_list",
+          "text": "Your corner squares (x4)",
+          "sublabel": "The four corners: Go, Jail, Free Parking, and Go to Jail.",
+          "hints": [
+            "GO — where everyone starts and collects on each pass",
+            "Jail / Just Visiting — the holding square",
+            "Free Parking — the middle rest stop",
+            "Go to Jail — the trouble square"
+          ],
+          "required": false,
+          "generatable": true,
+          "generate_prompt": "Generate themed names for the 4 corner squares.",
+          "count": 4,
+          "next": "q_chance_card_preview",
+          "maps_to": "personalisation.corner_labels"
+        },
+        {
+          "id": "q_chance_card_preview",
+          "mode": "configurable",
+          "type": "card_editor",
+          "text": "Your Chance cards",
+          "sublabel": "We've generated 16 Chance cards for your theme. Edit any you'd like to personalise further.",
+          "generatable": true,
+          "generate_prompt": "Generate 16 Chance cards for the property trading game theme.",
+          "required": false,
+          "next": "q_treasury_card_preview",
+          "maps_to": "personalisation.chance_cards"
+        },
+        {
+          "id": "q_treasury_card_preview",
+          "mode": "configurable",
+          "type": "card_editor",
+          "text": "Your Treasury cards",
+          "sublabel": "16 Treasury cards, pre-generated for your theme. Edit freely.",
+          "generatable": true,
+          "generate_prompt": "Generate 16 Treasury cards for the property trading game theme.",
+          "required": false,
+          "next": "SECTION_END",
+          "maps_to": "personalisation.treasury_cards"
+        }
+      ]
+    },
+    {
+      "id": "s8_final",
+      "title": "Almost there",
+      "subtitle": "Last chance to add anything before we show you your game.",
+      "questions": [
+        {
+          "id": "q_special_requests",
+          "mode": "always",
+          "type": "text_long",
+          "text": "Anything else you'd like us to know?",
+          "placeholder": "e.g. Please avoid any references to X. The recipient hates the colour orange. Make it funny.",
+          "hint": "This is your chance to give us any final instructions, restrictions, or requests.",
+          "required": false,
+          "generatable": false,
+          "next": "q_edition_confirm",
+          "maps_to": "personalisation.special_requests"
+        },
+        {
+          "id": "q_edition_confirm",
+          "mode": "always",
+          "type": "info",
+          "text": "You're ordering the {{edition}} Edition",
+          "sublabel_digital": "You'll receive a companion page URL and downloadable print files.",
+          "sublabel_physical": "Your fully printed game will be manufactured and shipped to you.",
+          "required": false,
+          "next": "PREVIEW",
+          "maps_to": null
+        }
+      ]
+    }
+  ],
+  "preview": {
+    "title": "Here's a taste of your game",
+    "description": "We've generated one quadrant of your board based on your answers. The full game will be built after you complete your order.",
+    "shows": ["one_quadrant_board_render", "game_name", "currency_name", "player_count", "property_count_confirmed", "card_count_confirmed"],
+    "cta_label": "Looks great — let's go!",
+    "edit_link": true
+  }
+}
