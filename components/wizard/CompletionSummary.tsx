@@ -8,12 +8,14 @@ interface CompletionSummaryProps {
   config: WizardConfig;
   state: WizardState;
   onStartFresh: () => void;
+  onGoBack: () => void;
 }
 
 export default function CompletionSummary({
   config,
   state,
   onStartFresh,
+  onGoBack,
 }: CompletionSummaryProps) {
   const answers = state.answers;
 
@@ -125,6 +127,9 @@ export default function CompletionSummary({
       <div className="flex items-center gap-4">
         <button type="button" onClick={onStartFresh} className="btn-ghost">
           Start fresh
+        </button>
+        <button type="button" onClick={onGoBack} className="btn-ghost">
+          Go back and edit
         </button>
         <button type="button" onClick={handleDownload} className="btn-primary">
           Download JSON

@@ -322,6 +322,11 @@ export default function WizardRenderer({ config, archetype }: WizardRendererProp
             setHistory([]);
             setPendingDraft(null);
           }}
+          onGoBack={() => {
+            setState((prev) =>
+              prev ? { ...prev, isComplete: false, isPreview: true } : prev
+            );
+          }}
         />
       </WizardShell>
     );
