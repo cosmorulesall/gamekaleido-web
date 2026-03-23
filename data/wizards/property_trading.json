@@ -18,11 +18,11 @@
           "id": "q_purpose",
           "mode": "always",
           "type": "single_choice",
-          "text": "Is this game a gift, or are you making it for yourself and your group?",
+          "text": "Is this a gift for someone, or is it for yourself?",
           "required": true,
           "options": [
-            { "label": "It's a gift", "value": "gift", "next": "q_recipient_name" },
-            { "label": "It's for us", "value": "self", "next": "q_about_group" }
+            { "label": "It's a gift for someone", "value": "gift", "next": "q_recipient_name" },
+            { "label": "It's for myself", "value": "self", "next": "q_about_group" }
           ],
           "maps_to": null
         },
@@ -385,7 +385,7 @@
           "text": "You're ordering the {{edition}} Edition",
           "sublabel_digital": "You'll receive a companion page URL and downloadable print files.",
           "sublabel_physical": "Your fully printed game will be manufactured and shipped to you.",
-          "required": false,
+          "required": true,
           "next": "PREVIEW",
           "maps_to": null
         }
