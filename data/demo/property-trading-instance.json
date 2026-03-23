@@ -1,0 +1,134 @@
+{
+  "meta": {
+    "archetype": "property_trading",
+    "order_id": "demo-001",
+    "created_at": "2026-03-23"
+  },
+  "identity": {
+    "game_name": "Dave's Sheffield Monopoly",
+    "tagline": "50 Years of Ale, Cricket & Avoiding Work",
+    "currency_name": "Pints",
+    "currency_symbol": "P"
+  },
+  "players": ["Dave", "Emma", "Jake", "Sophie"],
+  "board": {
+    "total_spaces": 40,
+    "spaces": [
+      { "position": 0, "type": "go", "name": "Collect Your Round" },
+      { "position": 1, "type": "property", "name": "The Harlequin", "colour_group": "brown", "price": 60, "rent": [2, 10, 30, 90, 160, 250] },
+      { "position": 2, "type": "treasury", "name": "Dave's Tab" },
+      { "position": 3, "type": "property", "name": "The Rutland Arms", "colour_group": "brown", "price": 60, "rent": [4, 20, 60, 180, 320, 450] },
+      { "position": 4, "type": "tax", "name": "Beer Tax", "amount": 200 },
+      { "position": 5, "type": "station", "name": "Sheffield Station", "price": 200 },
+      { "position": 6, "type": "property", "name": "Hunters Bar", "colour_group": "light_blue", "price": 100, "rent": [6, 30, 90, 270, 400, 550] },
+      { "position": 7, "type": "chance", "name": "Lucky Dip" },
+      { "position": 8, "type": "property", "name": "Ecclesall Road", "colour_group": "light_blue", "price": 100, "rent": [6, 30, 90, 270, 400, 550] },
+      { "position": 9, "type": "property", "name": "Sharrow Vale", "colour_group": "light_blue", "price": 120, "rent": [8, 40, 100, 300, 450, 600] },
+      { "position": 10, "type": "jail", "name": "The Doghouse" },
+      { "position": 11, "type": "property", "name": "Kelham Island", "colour_group": "pink", "price": 140, "rent": [10, 50, 150, 450, 625, 750] },
+      { "position": 12, "type": "utility", "name": "Dave's Power Bill", "price": 150 },
+      { "position": 13, "type": "property", "name": "Abbeydale Road", "colour_group": "pink", "price": 140, "rent": [10, 50, 150, 450, 625, 750] },
+      { "position": 14, "type": "property", "name": "Broomhill", "colour_group": "pink", "price": 160, "rent": [12, 60, 180, 500, 700, 900] },
+      { "position": 15, "type": "station", "name": "Meadowhall Express", "price": 200 },
+      { "position": 16, "type": "property", "name": "The Moor", "colour_group": "orange", "price": 180, "rent": [14, 70, 200, 550, 750, 950] },
+      { "position": 17, "type": "treasury", "name": "Dave's Tab" },
+      { "position": 18, "type": "property", "name": "Division Street", "colour_group": "orange", "price": 180, "rent": [14, 70, 200, 550, 750, 950] },
+      { "position": 19, "type": "property", "name": "West Street", "colour_group": "orange", "price": 200, "rent": [16, 80, 220, 600, 800, 1000] },
+      { "position": 20, "type": "free_parking", "name": "Dave's Armchair" },
+      { "position": 21, "type": "property", "name": "Endcliffe Park", "colour_group": "red", "price": 220, "rent": [18, 90, 250, 700, 875, 1050] },
+      { "position": 22, "type": "chance", "name": "Lucky Dip" },
+      { "position": 23, "type": "property", "name": "Botanical Gardens", "colour_group": "red", "price": 220, "rent": [18, 90, 250, 700, 875, 1050] },
+      { "position": 24, "type": "property", "name": "Weston Park", "colour_group": "red", "price": 240, "rent": [20, 100, 300, 750, 925, 1100] },
+      { "position": 25, "type": "station", "name": "Supertram Depot", "price": 200 },
+      { "position": 26, "type": "property", "name": "Chatsworth House", "colour_group": "yellow", "price": 260, "rent": [22, 110, 330, 800, 975, 1150] },
+      { "position": 27, "type": "property", "name": "Henderson's Relish HQ", "colour_group": "yellow", "price": 260, "rent": [22, 110, 330, 800, 975, 1150] },
+      { "position": 28, "type": "utility", "name": "Dave's Water Rates", "price": 150 },
+      { "position": 29, "type": "property", "name": "Bramall Lane", "colour_group": "yellow", "price": 280, "rent": [24, 120, 360, 850, 1025, 1200] },
+      { "position": 30, "type": "go_to_jail", "name": "Sent to the Doghouse" },
+      { "position": 31, "type": "property", "name": "Peace Gardens", "colour_group": "green", "price": 300, "rent": [26, 130, 390, 900, 1100, 1275] },
+      { "position": 32, "type": "property", "name": "The Winter Garden", "colour_group": "green", "price": 300, "rent": [26, 130, 390, 900, 1100, 1275] },
+      { "position": 33, "type": "treasury", "name": "Dave's Tab" },
+      { "position": 34, "type": "property", "name": "Sheffield Cathedral", "colour_group": "green", "price": 320, "rent": [28, 150, 450, 1000, 1200, 1400] },
+      { "position": 35, "type": "station", "name": "Hillsborough Express", "price": 200 },
+      { "position": 36, "type": "chance", "name": "Lucky Dip" },
+      { "position": 37, "type": "property", "name": "The Crucible", "colour_group": "dark_blue", "price": 350, "rent": [35, 175, 500, 1100, 1300, 1500] },
+      { "position": 38, "type": "tax", "name": "Luxury Tax", "amount": 100 },
+      { "position": 39, "type": "property", "name": "Sheffield Town Hall", "colour_group": "dark_blue", "price": 400, "rent": [50, 200, 600, 1400, 1700, 2000] }
+    ]
+  },
+  "card_decks": {
+    "chance": {
+      "name": "Lucky Dip",
+      "cards": [
+        { "id": "ch1", "text": "Dave buys everyone a pint. Collect 200 Pints.", "effect": "collect_money", "params": { "amount": 200 } },
+        { "id": "ch2", "text": "Lost a bet at Bramall Lane. Pay 50 Pints.", "effect": "pay_money", "params": { "amount": 50 } },
+        { "id": "ch3", "text": "Taxi to the nearest station. Advance to the nearest station.", "effect": "move_to_nearest_type", "params": { "space_type": "station" } },
+        { "id": "ch4", "text": "Dave's had one too many. Go directly to the Doghouse.", "effect": "go_to_jail", "params": {} },
+        { "id": "ch5", "text": "Dave remembers where he parked. Get Out of Jail Free.", "effect": "get_out_of_jail_free", "params": {} },
+        { "id": "ch6", "text": "Diplomatic immunity from the missus. No rent for 1 turn.", "effect": "rent_immunity", "params": { "turns": 1 } },
+        { "id": "ch7", "text": "Flash sale at the charity shop! Next property at 50% off.", "effect": "property_discount", "params": { "discount_percent": 50, "expires_in_turns": 3 } },
+        { "id": "ch8", "text": "Pickpocketed on West Street. Someone steals 75 Pints from you.", "effect": "steal_from_player", "params": { "amount": 75 } },
+        { "id": "ch9", "text": "Teleportation mishap at the pub. Swap positions with any player!", "effect": "swap_positions", "params": {} },
+        { "id": "ch10", "text": "Silent partner deal. Collect 25% of all rent paid for 2 rounds.", "effect": "collect_fraction_of_rents", "params": { "fraction": 0.25, "rounds": 2 } },
+        { "id": "ch11", "text": "Won the pub quiz. Collect 100 Pints.", "effect": "collect_money", "params": { "amount": 100 } },
+        { "id": "ch12", "text": "Birthday round! Collect 50 from each player.", "effect": "collect_from_each_player", "params": { "amount": 50 } },
+        { "id": "ch13", "text": "Go back 3 spaces. You forgot your wallet.", "effect": "move_back", "params": { "spaces": 3 } },
+        { "id": "ch14", "text": "Advance 2 spaces. Dave's shortcut through the park.", "effect": "move_forward", "params": { "spaces": 2 } },
+        { "id": "ch15", "text": "Building repairs. Pay 25 per house, 100 per hotel.", "effect": "pay_per_property", "params": { "cost_per_house": 25, "cost_per_hotel": 100 } },
+        { "id": "ch16", "text": "Advance to Collect Your Round. Collect 200 Pints.", "effect": "move_to_space", "params": { "target_position": 0, "collect_go_if_passed": true } }
+      ]
+    },
+    "treasury": {
+      "name": "Dave's Tab",
+      "cards": [
+        { "id": "tr1", "text": "Tax refund from HMRC. Collect 150 Pints.", "effect": "collect_money", "params": { "amount": 150 } },
+        { "id": "tr2", "text": "Dave's tab finally settled. Pay 100 Pints.", "effect": "pay_money", "params": { "amount": 100 } },
+        { "id": "tr3", "text": "Everyone chips in for Dave's birthday. Collect 25 from each player.", "effect": "collect_from_each_player", "params": { "amount": 25 } },
+        { "id": "tr4", "text": "You're buying the next round. Pay 50 to each player.", "effect": "pay_each_player", "params": { "amount": 50 } },
+        { "id": "tr5", "text": "Get out of the Doghouse free!", "effect": "get_out_of_jail_free", "params": {} },
+        { "id": "tr6", "text": "The missus grants you immunity. No rent for 1 turn.", "effect": "rent_immunity", "params": { "turns": 1 } },
+        { "id": "tr7", "text": "Nicked Dave's last tenner. Steal 50 from any player.", "effect": "steal_from_player", "params": { "amount": 50 } },
+        { "id": "tr8", "text": "Collect 200 Pints. Dave forgot to lock the safe.", "effect": "collect_money", "params": { "amount": 200 } },
+        { "id": "tr9", "text": "Pay 75 Pints. Dave's boiler broke again.", "effect": "pay_money", "params": { "amount": 75 } },
+        { "id": "tr10", "text": "Collect 50 Pints. Found a fiver in your old coat.", "effect": "collect_money", "params": { "amount": 50 } },
+        { "id": "tr11", "text": "Pay 200 Pints. Council tax is due.", "effect": "pay_money", "params": { "amount": 200 } },
+        { "id": "tr12", "text": "Community fundraiser! Collect 100 Pints.", "effect": "collect_money", "params": { "amount": 100 } },
+        { "id": "tr13", "text": "Splashed out on a new cricket bat. Pay 150 Pints.", "effect": "pay_money", "params": { "amount": 150 } },
+        { "id": "tr14", "text": "Premium bond win! Collect 75 Pints.", "effect": "collect_money", "params": { "amount": 75 } },
+        { "id": "tr15", "text": "Dave's charity run raised money. Collect 25 from each player.", "effect": "collect_from_each_player", "params": { "amount": 25 } },
+        { "id": "tr16", "text": "Road trip to the cricket. Pay 50 Pints for petrol.", "effect": "pay_money", "params": { "amount": 50 } }
+      ]
+    }
+  },
+  "game_rules": {
+    "starting_money": 1500,
+    "go_collect": 200,
+    "jail_fine": 50,
+    "jail_turns_max": 3,
+    "doubles_roll_again": true,
+    "three_doubles_go_to_jail": true,
+    "max_houses_per_property": 4,
+    "houses_before_hotel": 4,
+    "house_limit_total": 32,
+    "hotel_limit_total": 12,
+    "auction_on_decline": true,
+    "monopoly_rent_multiplier": 2,
+    "station_base_rent": 25,
+    "utility_multiplier_one": 4,
+    "utility_multiplier_two": 10,
+    "house_rules": {
+      "free_parking_pot": false,
+      "no_auctions": false
+    }
+  },
+  "colour_groups": {
+    "brown": { "colour": "#8B5E3C", "properties": [1, 3], "house_cost": 50, "hotel_cost": 50 },
+    "light_blue": { "colour": "#6AABBF", "properties": [6, 8, 9], "house_cost": 50, "hotel_cost": 50 },
+    "pink": { "colour": "#DB7093", "properties": [11, 13, 14], "house_cost": 100, "hotel_cost": 100 },
+    "orange": { "colour": "#FF8C00", "properties": [16, 18, 19], "house_cost": 100, "hotel_cost": 100 },
+    "red": { "colour": "#DC143C", "properties": [21, 23, 24], "house_cost": 150, "hotel_cost": 150 },
+    "yellow": { "colour": "#FFD700", "properties": [26, 27, 29], "house_cost": 150, "hotel_cost": 150 },
+    "green": { "colour": "#228B22", "properties": [31, 32, 34], "house_cost": 200, "hotel_cost": 200 },
+    "dark_blue": { "colour": "#191970", "properties": [37, 39], "house_cost": 200, "hotel_cost": 200 }
+  }
+}

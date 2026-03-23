@@ -23,6 +23,12 @@ export default function Home() {
           Create a Trivia Game
         </Link>
       </div>
+      <Link
+        href="/play/property-trading-instance"
+        className="btn-ghost text-center text-xs mt-6"
+      >
+        Try the demo companion page
+      </Link>
     </main>
   );
 }
