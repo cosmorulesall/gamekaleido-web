@@ -1,8 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import type { WizardConfig, WizardState } from "@/lib/wizard-types";
+import { createCheckout } from "@/lib/api";
 
 interface CompletionSummaryProps {
   config: WizardConfig;
@@ -21,23 +22,34 @@ export default function CompletionSummary({
 }: CompletionSummaryProps) {
   const answers = state.answers;
 
-  function handleDownload() {
-    const data = {
-      archetype: config.wizard.archetype,
-      edition: state.edition,
-      mode: state.mode,
-      answers: answers,
-      exportedAt: new Date().toISOString(),
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `gamekaleido-${config.wizard.archetype}-${Date.now()}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+
+  async function handleProceedToPayment() {
+    if (!customerEmail || !customerEmail.includes("@")) {
+      setPaymentError("Please enter a valid email address");
+      return;
+    }
+
+    setIsSubmitting(true);
+    setPaymentError(null);
+
+    try {
+      const response = await createCheckout({
+        archetype: config.wizard.archetype,
+        edition: state.edition,
+        customer_email: customerEmail,
+        wizard_answers: state.answers,
+      });
+      // Redirect to Stripe Checkout
+      window.location.href = response.checkout_url;
+    } catch (err) {
+      setPaymentError(
+        err instanceof Error ? err.message : "Something went wrong. Please try again."
+      );
+      setIsSubmitting(false);
+    }
   }
 
   // Build sections with their answered questions
@@ -88,8 +100,8 @@ export default function CompletionSummary({
         Wizard Complete
       </h2>
       <p className="text-warm-muted text-sm mb-8 max-w-md text-center">
-        Here&apos;s everything you entered. In production, this would submit to
-        the backend and redirect to Stripe Checkout.
+        Here&apos;s everything you entered. Review your choices below, then
+        proceed to payment to start creating your game.
       </p>
 
       {/* Summary card */}
@@ -134,16 +146,48 @@ export default function CompletionSummary({
         ))}
       </div>
 
-      {/* Actions */}
+      {/* Email + Payment */}
+      <div className="w-full max-w-lg space-y-4 mb-6">
+        <div>
+          <label className="block text-sm text-warm-muted mb-1">
+            Your email address
+          </label>
+          <input
+            type="email"
+            value={customerEmail}
+            onChange={(e) => setCustomerEmail(e.target.value)}
+            placeholder="you@example.com"
+            className="glass-input"
+          />
+          <p className="text-xs text-warm-muted mt-1">
+            We&apos;ll send your order updates and game preview here.
+          </p>
+        </div>
+
+        {paymentError && (
+          <p className="text-red-400 text-sm">{paymentError}</p>
+        )}
+
+        <button
+          type="button"
+          onClick={handleProceedToPayment}
+          disabled={isSubmitting}
+          className="w-full py-4 rounded-xl font-semibold text-lg
+                     bg-amber text-warm-bg hover:opacity-90
+                     disabled:opacity-50 disabled:cursor-not-allowed
+                     transition-opacity"
+        >
+          {isSubmitting ? "Preparing checkout..." : "Proceed to Payment"}
+        </button>
+      </div>
+
+      {/* Navigation actions */}
       <div className="flex items-center gap-4">
         <button type="button" onClick={onStartFresh} className="btn-ghost">
           Start fresh
         </button>
         <button type="button" onClick={onGoBack} className="btn-ghost">
           Go back and edit
-        </button>
-        <button type="button" onClick={handleDownload} className="btn-primary">
-          Download JSON
         </button>
       </div>
     </motion.div>

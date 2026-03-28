@@ -305,6 +305,7 @@ export default function WizardRenderer({ config, archetype }: WizardRendererProp
   // Check if can proceed
   function canGoNext(): boolean {
     if (!currentQuestion || !state) return false;
+    if (currentQuestion.type === "info") return true;
     if (!currentQuestion.required) return true;
 
     const answer = state.answers[currentQuestion.maps_to ?? currentQuestion.id] ?? getDefaultForType(currentQuestion);

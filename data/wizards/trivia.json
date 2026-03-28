@@ -307,7 +307,7 @@
           "text": "You're ordering the {{edition}} Edition",
           "sublabel_digital": "You'll receive a companion page URL and downloadable print files.",
           "sublabel_physical": "Your fully printed game will be manufactured and shipped to you.",
-          "required": true,
+          "required": false,
           "next": "PREVIEW",
           "maps_to": null
         }
