@@ -26,6 +26,35 @@
   --glass-bg: rgba(18, 16, 20, 0.65);
   --glass-border: rgba(245, 240, 235, 0.06);
   --glass-blur: 20px;
+
+  /* ===== Marketing Design System (mk- prefix) ===== */
+  --mk-bg: #E8E0D4;
+  --mk-bg-warm: #DDD5C8;
+  --mk-surface: #D6CEC0;
+  --mk-elevated: #CFC6B8;
+  --mk-text-primary: #2A2420;
+  --mk-text-body: #4A4238;
+  --mk-text-muted: #6B5F51;
+  --mk-brass-dark: #6E5730;
+  --mk-brass: #8B6F3A;
+  --mk-brass-light: #A6884E;
+  --mk-border-brass: rgba(139, 111, 58, 0.2);
+  --mk-amethyst: #A78BFA;
+  --mk-amethyst-deep: #7C3AED;
+  --mk-ruby: #F472B6;
+  --mk-ruby-deep: #DB2777;
+  --mk-sapphire: #60A5FA;
+  --mk-sapphire-deep: #2563EB;
+  --mk-emerald: #34D399;
+  --mk-emerald-deep: #059669;
+  --mk-amber: #FBBF24;
+  --mk-amber-deep: #D97706;
+  --mk-crimson: #F87171;
+  --mk-crimson-deep: #DC2626;
+  --mk-teal: #2DD4BF;
+  --mk-teal-deep: #0D9488;
+  --mk-orchid: #E879F9;
+  --mk-orchid-deep: #A855F7;
 }
 
 @layer base {
@@ -37,6 +66,11 @@
   ::selection {
     background: rgba(212, 130, 10, 0.3);
     color: var(--warm-white);
+  }
+
+  .mk-page ::selection {
+    background: rgba(139, 111, 58, 0.3);
+    color: var(--mk-text-primary);
   }
 
   /* Scrollbar styling */
@@ -128,6 +162,90 @@
   .btn-generate:hover {
     background: rgba(26, 122, 122, 0.15);
     border-color: rgba(26, 122, 122, 0.5);
+  }
+
+  /* ===== Marketing Component Classes ===== */
+  .mk-page {
+    background-color: var(--mk-bg);
+    background-image: url('/textures/paper-grain.png');
+    background-repeat: repeat;
+    background-size: 512px 512px;
+    color: var(--mk-text-body);
+    min-height: 100dvh;
+  }
+  .mk-letterpress {
+    color: var(--mk-text-primary);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25), 0 -1px 0 rgba(255, 255, 255, 0.12);
+  }
+  .mk-card {
+    background-color: var(--mk-surface);
+    background-image: url('/textures/paper-grain.png');
+    background-repeat: repeat;
+    background-size: 512px 512px;
+    border: 1px solid var(--mk-border-brass);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .mk-card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+  .mk-btn-primary {
+    @apply font-medium text-sm tracking-wide px-8 py-3 rounded-lg transition-all duration-200 inline-block text-center;
+    background: linear-gradient(135deg, var(--mk-brass-dark), var(--mk-brass), var(--mk-brass-light));
+    background-size: 100% 100%;
+    color: #F5F0EB;
+    box-shadow: 0 2px 8px rgba(139, 111, 58, 0.25);
+    position: relative;
+    overflow: hidden;
+  }
+  .mk-btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url('/textures/brass-noise.png');
+    background-repeat: repeat;
+    background-size: 256px 256px;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+  .mk-btn-primary:hover {
+    box-shadow: 0 4px 16px rgba(139, 111, 58, 0.35);
+    transform: translateY(-1px);
+  }
+  .mk-btn-primary:active { transform: translateY(0); }
+  .mk-btn-primary:disabled, .mk-btn-primary[aria-disabled="true"] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+  .mk-btn-ghost {
+    @apply font-medium text-sm tracking-wide px-6 py-3 rounded-lg transition-all duration-200 inline-block text-center;
+    color: var(--mk-brass);
+    border: 1px solid var(--mk-border-brass);
+    background: transparent;
+  }
+  .mk-btn-ghost:hover {
+    color: var(--mk-brass-dark);
+    border-color: var(--mk-brass);
+    background: rgba(139, 111, 58, 0.06);
+  }
+  .mk-btn-subtle {
+    @apply font-medium text-sm tracking-wide px-6 py-3 rounded-lg transition-all duration-200 inline-block text-center;
+    color: var(--mk-text-muted);
+    border: 1px solid rgba(139, 111, 58, 0.1);
+    background: rgba(139, 111, 58, 0.04);
+  }
+  .mk-btn-subtle:hover {
+    color: var(--mk-text-body);
+    background: rgba(139, 111, 58, 0.08);
+  }
+  .mk-divider {
+    background: linear-gradient(90deg, transparent, var(--mk-border-brass), transparent);
+    height: 1px;
+    border: none;
   }
 }
 
