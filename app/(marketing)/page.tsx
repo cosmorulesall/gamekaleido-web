@@ -1,9 +1,17 @@
+import { Hero } from '@/components/marketing/Hero';
+import { WhatIs } from '@/components/marketing/WhatIs';
+import { HowItWorks } from '@/components/marketing/HowItWorks';
+import { PricingSection } from '@/components/marketing/PricingSection';
+import { FooterZone } from '@/components/marketing/FooterZone';
+
 export default function HomePage() {
   return (
-    <div className="min-h-[80vh] flex items-center justify-center">
-      <h1 className="font-mk-display text-4xl font-bold mk-letterpress">
-        Gamekaleido
-      </h1>
-    </div>
+    <>
+      <Hero />
+      <WhatIs />
+      <HowItWorks />
+      <PricingSection />
+      <FooterZone />
+    </>
   );
 }
