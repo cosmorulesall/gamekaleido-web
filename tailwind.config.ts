@@ -4,6 +4,7 @@ const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./content/**/*.{md,mdx}",
   ],
   theme: {
     extend: {
@@ -46,6 +47,8 @@ const config: Config = {
       fontFamily: {
         display: ["var(--font-cormorant)", "Georgia", "serif"],
         body: ["var(--font-dm-sans)", "system-ui", "sans-serif"],
+        'mk-display': ['"Clash Display"', 'system-ui', 'sans-serif'],
+        'mk-body': ['Satoshi', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         "display-xl": ["clamp(2.5rem, 6vw, 4.5rem)", { lineHeight: "1.05", letterSpacing: "-0.02em" }],

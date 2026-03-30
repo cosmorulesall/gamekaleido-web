@@ -19,7 +19,7 @@ const dmSans = DM_Sans({
 export const metadata: Metadata = {
   title: "Gamekaleido — Personalised Board Games",
   description:
-    "Create a one-of-a-kind board game personalised to your life, your people, your world. Mesmerising. Premium. Personal.",
+    "Create a one-of-a-kind board game personalised to your life, your people, your world.",
 };
 
 export default function RootLayout({
@@ -29,6 +29,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${cormorant.variable} ${dmSans.variable}`}>
+      <head>
+        <link
+          href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=satoshi@400,500&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body>{children}</body>
     </html>
   );
