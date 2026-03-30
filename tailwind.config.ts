@@ -70,6 +70,9 @@ const config: Config = {
         "fade-in": "fadeIn 0.5s ease-out",
         "slide-up": "slideUp 0.5s ease-out",
         "slide-left": "slideLeft 0.5s ease-out",
+        'kaleido-drift-1': 'kaleidoDrift1 20s ease-in-out infinite',
+        'kaleido-drift-2': 'kaleidoDrift2 25s ease-in-out infinite',
+        'kaleido-drift-3': 'kaleidoDrift3 18s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -83,6 +86,20 @@ const config: Config = {
         slideLeft: {
           from: { opacity: "0", transform: "translateX(30px)" },
           to: { opacity: "1", transform: "translateX(0)" },
+        },
+        kaleidoDrift1: {
+          '0%, 100%': { transform: 'translate(0, 0) scale(1)' },
+          '33%': { transform: 'translate(40px, -30px) scale(1.05)' },
+          '66%': { transform: 'translate(-20px, 20px) scale(0.95)' },
+        },
+        kaleidoDrift2: {
+          '0%, 100%': { transform: 'translate(0, 0) scale(1)' },
+          '50%': { transform: 'translate(-50px, 30px) scale(1.1)' },
+        },
+        kaleidoDrift3: {
+          '0%, 100%': { transform: 'translate(0, 0) scale(1)' },
+          '40%': { transform: 'translate(30px, 40px) scale(1.05)' },
+          '80%': { transform: 'translate(-40px, -20px) scale(0.98)' },
         },
       },
     },
